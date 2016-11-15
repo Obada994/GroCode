@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Fragment_Grocode.iml" filepath="$PROJECT_DIR$/.idea/modules/Fragment_Grocode.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/GroCode.iml" filepath="$PROJECT_DIR$/.idea/modules/GroCode.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" />
     </modules>
   </component>

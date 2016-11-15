@@ -77,10 +77,11 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.my_lists) {
             fragmentManager.beginTransaction().replace(R.id.content_frame, new FirstFragmant()).commit();
 
-        } else if (id == R.id.subscribed_lists) {
+        } if (id == R.id.subscribed_lists) {
             fragmentManager.beginTransaction().replace(R.id.content_frame, new SecondFragmant()).commit();
 
-
+        } else if (id == R.id.settingsMenu) {
+            fragmentManager.beginTransaction().replace(R.id.content_frame, new ThirdFragmant()).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
