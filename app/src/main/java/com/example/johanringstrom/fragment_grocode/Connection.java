@@ -2,11 +2,8 @@ package com.example.johanringstrom.fragment_grocode;
 
 import android.app.Activity;
 import android.content.Context;
-import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
-import android.util.JsonReader;
 import android.util.Log;
-import android.widget.EditText;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.*;
 import org.json.JSONArray;
@@ -14,29 +11,25 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.security.Key;
-import java.util.Iterator;
+
 
 /**
  * Created by johanringstrom on 05/11/16.
  */
 public class Connection extends AppCompatActivity implements MqttCallback {
     protected static MqttAndroidClient  client;
-    private MqttMessage Mqttmessage;
-    private String TAG;
-    public String[] ArrMsg;
     private String clientId = "fragmentClient1223";
     private int qos = 1;
-    public static String currentTodo;
+    private static String currentTodo;
+    private String TAG;
 
     public Connection(final Context context,  final Activity activity){
-
 
         if(client == null) {
             //Set clientId and create new create a MqttAndroid client
             //String clientId = MqttClient.generateClientId();
             this.client =
-                    new MqttAndroidClient(context, "tcp://test.mosquitto.org:1883",
+                    new MqttAndroidClient(context, "tcp://broker.hivemq.com:1883",//test.mosquitto.org
                             clientId);
             //Tryes to connect this client to a the  broker.
             try {
@@ -63,11 +56,11 @@ public class Connection extends AppCompatActivity implements MqttCallback {
 
             client.setCallback(this);
         }
-        subscribeToTopic();
+
     }
     //Publish add or delete message to broker in json format send in binary.
     public void publish(String addOrDeleteOrCreate, String listName, String item) {
-        //Make almost a a Jsonobject following our RFC. Waiting to get it aproved
+        //Make  a Jsonobject following our RFC. Waiting to get it aproved
         currentTodo = addOrDeleteOrCreate;
         String topic = "RootGro/"+ clientId+"/"+listName;
         JSONObject obj = new JSONObject();
@@ -96,6 +89,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
 
     //Subscribe to a predefined topic
     public  void subscribeToTopic() {
+        //Subscribe to root client + client
         String topic = "RootClient/"+ clientId+ "/#";
         try {
             IMqttToken subToken = client.subscribe(topic, qos);
@@ -176,11 +170,11 @@ public class Connection extends AppCompatActivity implements MqttCallback {
 
     //Get messages on the subscribed message. Clears listview and add the received message split up to a array.
     public void messageArrived(String topic, MqttMessage message) throws Exception {
-
+        //Create a jason object that does not fullfill the rfc exactly jet.
         JSONObject Obj = new JSONObject(new String(message.getPayload()));
         JSONArray itemArr = Obj.getJSONArray("data");
         FirstFragmant first = new FirstFragmant();
-        //Listview ListV = new Listview();
+        SecondFragmant second = new SecondFragmant();
         first.getListAdapter().clear();
         Log.d("currentTodo", currentTodo);
 
@@ -191,26 +185,13 @@ public class Connection extends AppCompatActivity implements MqttCallback {
                 first.getListAdapter().add(itemArr.get(i).toString());
         }
 
-        /*if (currentTodo.equals("getList")) {
-            ListV.getListAdapter().clear();
+        if (currentTodo.equals("getList")) {
+            second.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++)
-                ListV.getListAdapter().add(itemArr.get(i).toString());
+                second.getListAdapter().add(itemArr.get(i).toString());
         }
-*/
-        /*Iterator<String> iter = ItemObj.keys();
-        while (iter.hasNext()) {
-            String key = iter.next();
-            try {
-
-                Object value = ItemObj.get(key);
-                Main.getListAdapter().add(value.toString());
-            } catch (JSONException e) {
-
-            }*/
-
-        //}
     }
-
+    //Get client
     public MqttAndroidClient getClient(){
         return client;
     }

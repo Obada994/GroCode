@@ -11,11 +11,15 @@
                 android:icon="@drawable/ic_menu_share"
                 android:title="Shared Lists"/>
 
+        <item
+                android:id="@+id/notifications"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="Notifications"/>
 
         <item
-                android:id="@+id/settingsMenu"
-                android:icon="@drawable/ic_menu_manage"
-                android:title="Settings Menu"/> </group>
+                android:id="@+id/logout"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Logout"/> </group>
 
     <!--
             <item

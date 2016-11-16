@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Creates a connection
         con = new Connection(MainActivity.this, MainActivity.this);
 
 
@@ -87,19 +88,25 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.my_lists) {
 
             fragmentManager.beginTransaction().replace(R.id.content_frame, new FirstFragmant()).commit();
+            //Starts to subscribe;
+            con.subscribeToTopic();
+            //Looggs the state of the client
             if(con.getClient().isConnected()) {
                 Log.d("StateTest", "true");
             } else {
                 Log.d("StateTest", "false");
 
             };
-                 con.publish("getListsOfLists", con.getClient().getClientId(), "Test");
+                 con.publish("getListsOfLists", "test", "Test");
 
         } if (id == R.id.subscribed_lists) {
             fragmentManager.beginTransaction().replace(R.id.content_frame, new SecondFragmant()).commit();
 
-        } else if (id == R.id.settingsMenu) {
+        } if (id == R.id.notifications) {
             fragmentManager.beginTransaction().replace(R.id.content_frame, new ThirdFragmant()).commit();
+
+        } else if (id == R.id.logout) {
+            fragmentManager.beginTransaction().replace(R.id.content_frame, new FourthFragmant()).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
