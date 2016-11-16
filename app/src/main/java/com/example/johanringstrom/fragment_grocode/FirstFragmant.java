@@ -7,7 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 /**
@@ -20,11 +26,15 @@ public class FirstFragmant extends Fragment{
     private static  ArrayAdapter<String> listAdapter ;
     ArrayList<String> GroList;
     private EditText EditText;
+    Connection con;
+    private MqttAndroidClient client;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.first_layout, container, false);
+
+        con = new Connection(getActivity(), getActivity());
 
         //List view to display list
             ListView = (ListView) myView.findViewById(R.id.listView);
@@ -56,11 +66,16 @@ public class FirstFragmant extends Fragment{
         final Button btnAdd = (Button) myView.findViewById(R.id.add);
         btnAdd.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                listAdapter.add(EditText.getText().toString());
-                EditText.setText("");
+                con.publish("getListsOfLists", "Test", "Test");
 
             }
         });
         return myView;
     }
+    //Gets listadapter
+    public ArrayAdapter<String> getListAdapter(){
+        return this.listAdapter;
+    }
+
+
 }

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,9 +14,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.util.Strings;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+     protected MqttAndroidClient client;
+    Connection con;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +30,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        con = new Connection(MainActivity.this, MainActivity.this);
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -33,6 +42,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
     }
 
     @Override
@@ -75,7 +85,15 @@ public class MainActivity extends AppCompatActivity
         android.app.FragmentManager fragmentManager = getFragmentManager();
 
         if (id == R.id.my_lists) {
+
             fragmentManager.beginTransaction().replace(R.id.content_frame, new FirstFragmant()).commit();
+            if(con.getClient().isConnected()) {
+                Log.d("StateTest", "true");
+            } else {
+                Log.d("StateTest", "false");
+
+            };
+                 con.publish("getListsOfLists", con.getClient().getClientId(), "Test");
 
         } if (id == R.id.subscribed_lists) {
             fragmentManager.beginTransaction().replace(R.id.content_frame, new SecondFragmant()).commit();
@@ -88,4 +106,6 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 }
