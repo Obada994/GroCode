@@ -3,12 +3,12 @@ package com.example.johanringstrom.fragment_grocode;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import org.eclipse.paho.android.service.MqttAndroidClient;
+
 import java.util.ArrayList;
 
 /**
@@ -24,6 +24,8 @@ public class FirstFragmant extends Fragment{
     Connection con;
     private MqttAndroidClient client;
     private static Object list;
+
+
 
     @Nullable
     @Override
@@ -80,4 +82,5 @@ public class FirstFragmant extends Fragment{
         return this.list.toString();
 
     }
+
 }

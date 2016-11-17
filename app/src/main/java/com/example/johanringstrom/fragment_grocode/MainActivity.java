@@ -1,24 +1,17 @@
 package com.example.johanringstrom.fragment_grocode;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.client.mqttv3.util.Strings;
-
-import static android.R.attr.data;
 
 
 public class MainActivity extends AppCompatActivity
@@ -26,6 +19,7 @@ public class MainActivity extends AppCompatActivity
 
      protected MqttAndroidClient client;
     Connection con;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +43,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -58,6 +53,7 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -81,6 +77,7 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -89,6 +86,7 @@ public class MainActivity extends AppCompatActivity
         android.app.FragmentManager fragmentManager = getFragmentManager();
 
         if (id == R.id.my_lists) {
+            setTitle(getString(R.string.title_section1));
             //Goes to first fragment
             fragmentManager.beginTransaction().replace(R.id.content_frame, new FirstFragmant()).commit();
 
@@ -107,12 +105,15 @@ public class MainActivity extends AppCompatActivity
 
 
         } if (id == R.id.subscribed_lists) {
+            setTitle(getString(R.string.title_section2));
             fragmentManager.beginTransaction().replace(R.id.content_frame, new SecondFragmant()).commit();
 
         } if (id == R.id.notifications) {
+            setTitle(getString(R.string.title_section3));
             fragmentManager.beginTransaction().replace(R.id.content_frame, new ThirdFragmant()).commit();
 
         } else if (id == R.id.logout) {
+            setTitle(getString(R.string.title_section4));
             fragmentManager.beginTransaction().replace(R.id.content_frame, new FourthFragmant()).commit();
         }
 
@@ -120,6 +121,5 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 
 }
