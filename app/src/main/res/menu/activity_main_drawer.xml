@@ -7,7 +7,7 @@
                 android:icon="@drawable/ic_menu_gallery"
                 android:title="My Lists"/>
         <item
-                android:id="@+id/subscribed_lists"
+                android:id="@+id/share_lists"
                 android:icon="@drawable/ic_menu_share"
                 android:title="Shared Lists"/>
 

@@ -8,6 +8,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity
 
      protected MqttAndroidClient client;
     Connection con;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -51,6 +54,7 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -74,6 +78,7 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -82,6 +87,7 @@ public class MainActivity extends AppCompatActivity
         android.app.FragmentManager fragmentManager = getFragmentManager();
 
         if (id == R.id.my_lists) {
+            setTitle(getString(R.string.title_section1));
             //Goes to first fragment
             fragmentManager.beginTransaction().replace(R.id.content_frame, new MyLists()).commit();
 
@@ -99,14 +105,21 @@ public class MainActivity extends AppCompatActivity
             };
 
 
-        } if (id == R.id.subscribed_lists) {
+        } if (id == R.id.share_lists) {
+
             fragmentManager.beginTransaction().replace(R.id.content_frame, new ItemsList()).commit();
             con.publish("getSubscriptionLists", "Test", "Test");
 
+            setTitle(getString(R.string.title_section2));
+            fragmentManager.beginTransaction().replace(R.id.content_frame, new ItemsList()).commit();
+
+
         } if (id == R.id.notifications) {
+            setTitle(getString(R.string.title_section3));
             fragmentManager.beginTransaction().replace(R.id.content_frame, new ThirdFragmant()).commit();
 
         } else if (id == R.id.logout) {
+            setTitle(getString(R.string.title_section4));
             fragmentManager.beginTransaction().replace(R.id.content_frame, new FourthFragmant()).commit();
         }
 
@@ -114,6 +127,5 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 
 }

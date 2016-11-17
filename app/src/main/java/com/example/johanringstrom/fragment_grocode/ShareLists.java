@@ -14,7 +14,7 @@ import java.util.ArrayList;
 /**
  * Created by johanringstrom on 10/11/16.
  */
-public class MyLists extends Fragment{
+public class ShareLists extends Fragment{
 
     View myView;
     private ListView ListView ;

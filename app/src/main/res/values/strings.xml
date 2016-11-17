@@ -1,5 +1,13 @@
 <resources>
-    <string name="app_name">Fragment_Grocode</string>
+    <string name="app_name">Grocode</string>
+    <string name="UserID">User ID</string>
+
+    <string name="title_section1">My Lists</string>
+    <string name="title_section2">Shared Lists</string>
+    <string name="title_section3">Notifications</string>
+    <string name="title_section4">Logout</string>
+
+
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
