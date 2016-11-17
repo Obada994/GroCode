@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity
                 con.publish("getListsOfLists", "Test", "Test");
             } else {
                 Log.d("StateTest", "false");
-                Toast.makeText(MainActivity.this, "Not connected to the broker", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Not connected to the broker mother father", Toast.LENGTH_LONG).show();
 
             };
 
