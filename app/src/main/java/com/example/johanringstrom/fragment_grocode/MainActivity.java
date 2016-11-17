@@ -14,8 +14,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.util.Strings;
+
+import static android.R.attr.data;
 
 
 public class MainActivity extends AppCompatActivity
@@ -86,18 +89,22 @@ public class MainActivity extends AppCompatActivity
         android.app.FragmentManager fragmentManager = getFragmentManager();
 
         if (id == R.id.my_lists) {
-
+            //Goes to first fragment
             fragmentManager.beginTransaction().replace(R.id.content_frame, new FirstFragmant()).commit();
-            //Starts to subscribe;
-            con.subscribeToTopic();
-            //Looggs the state of the client
+
             if(con.getClient().isConnected()) {
                 Log.d("StateTest", "true");
+
+                //Starts to subscribe;
+                con.subscribeToTopic();
+                //Publish a request
+                con.publish("getListsOfLists", "Test", "Test");
             } else {
                 Log.d("StateTest", "false");
+                Toast.makeText(MainActivity.this, "Not connected to the broker", Toast.LENGTH_LONG).show();
 
             };
-                 con.publish("getListsOfLists", "test", "Test");
+
 
         } if (id == R.id.subscribed_lists) {
             fragmentManager.beginTransaction().replace(R.id.content_frame, new SecondFragmant()).commit();

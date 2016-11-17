@@ -170,7 +170,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
 
     //Get messages on the subscribed message. Clears listview and add the received message split up to a array.
     public void messageArrived(String topic, MqttMessage message) throws Exception {
-        //Create a jason object that does not fullfill the rfc exactly jet.
+        //Create a jason object that does not fullfill the rfc exactly jet. It takes a objecct like this “data”:[”item1”, ”item2”…]
         JSONObject Obj = new JSONObject(new String(message.getPayload()));
         JSONArray itemArr = Obj.getJSONArray("data");
         FirstFragmant first = new FirstFragmant();
