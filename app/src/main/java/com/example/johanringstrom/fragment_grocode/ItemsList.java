@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 /**
  * Created by johanringstrom on 10/11/16.
  */
-public class SecondFragmant extends Fragment{
+public class ItemsList extends Fragment{
     View myView;
     private ListView ListView ;
     private static  ArrayAdapter<String> listAdapter ;
@@ -34,7 +33,7 @@ public class SecondFragmant extends Fragment{
         con = new Connection(getActivity(), getActivity());
 
         //Create Firstfragment object to get accsess to its methods
-        FirstFragmant first = new FirstFragmant();
+        MyLists first = new MyLists();
         ListName = first.getListname();
 
         //List view to display list

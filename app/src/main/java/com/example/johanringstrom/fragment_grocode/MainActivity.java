@@ -1,11 +1,7 @@
 package com.example.johanringstrom.fragment_grocode;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -16,9 +12,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.client.mqttv3.util.Strings;
-
-import static android.R.attr.data;
 
 
 public class MainActivity extends AppCompatActivity
@@ -90,7 +83,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.my_lists) {
             //Goes to first fragment
-            fragmentManager.beginTransaction().replace(R.id.content_frame, new FirstFragmant()).commit();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, new MyLists()).commit();
 
             if(con.getClient().isConnected()) {
                 Log.d("StateTest", "true");
@@ -107,7 +100,8 @@ public class MainActivity extends AppCompatActivity
 
 
         } if (id == R.id.subscribed_lists) {
-            fragmentManager.beginTransaction().replace(R.id.content_frame, new SecondFragmant()).commit();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, new ItemsList()).commit();
+            con.publish("getSubscriptionLists", "Test", "Test");
 
         } if (id == R.id.notifications) {
             fragmentManager.beginTransaction().replace(R.id.content_frame, new ThirdFragmant()).commit();

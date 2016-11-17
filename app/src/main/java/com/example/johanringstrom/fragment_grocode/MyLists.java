@@ -3,7 +3,6 @@ package com.example.johanringstrom.fragment_grocode;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 /**
  * Created by johanringstrom on 10/11/16.
  */
-public class FirstFragmant extends Fragment{
+public class MyLists extends Fragment{
 
     View myView;
     private ListView ListView ;
@@ -53,7 +52,7 @@ public class FirstFragmant extends Fragment{
                                     int position, long id) {
                 list = ListView.getItemAtPosition(position);
                 android.app.FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content_frame, new SecondFragmant()).commit();
+                fragmentManager.beginTransaction().replace(R.id.content_frame, new ItemsList()).commit();
                 con.publish("getList", list.toString(), "Test");
             }
         });

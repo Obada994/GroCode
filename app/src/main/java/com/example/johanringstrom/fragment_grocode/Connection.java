@@ -18,7 +18,7 @@ import java.io.UnsupportedEncodingException;
  */
 public class Connection extends AppCompatActivity implements MqttCallback {
     protected static MqttAndroidClient  client;
-    private String clientId = "fragmentClient1223";
+    private String clientId = "johan@gmail";
     private int qos = 1;
     private static String currentTodo;
     private String TAG;
@@ -29,9 +29,9 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             //Set clientId and create new create a MqttAndroid client
             //String clientId = MqttClient.generateClientId();
             this.client =
-                    new MqttAndroidClient(context, "tcp://broker.hivemq.com:1883",//test.mosquitto.org
-                            clientId);
-            //Tryes to connect this client to a the  broker.
+                    new MqttAndroidClient(context, "tcp://test.mosquitto.org:1883",
+            //Tryes to connect this client to a the  broker. test.mosquitto.org
+                            clientId);//"tcp://192.168.43.185:1883
             try {
                 IMqttToken token = client.connect();
                 token.setActionCallback(new IMqttActionListener() {
@@ -62,7 +62,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
     public void publish(String addOrDeleteOrCreate, String listName, String item) {
         //Make  a Jsonobject following our RFC. Waiting to get it aproved
         currentTodo = addOrDeleteOrCreate;
-        String topic = "RootGro/"+ clientId+"/"+listName;
+        String topic = "Gro/"+ clientId+"/"+listName;
         JSONObject obj = new JSONObject();
         JSONObject obj2 = new JSONObject();
 
@@ -173,8 +173,8 @@ public class Connection extends AppCompatActivity implements MqttCallback {
         //Create a jason object that does not fullfill the rfc exactly jet. It takes a objecct like this “data”:[”item1”, ”item2”…]
         JSONObject Obj = new JSONObject(new String(message.getPayload()));
         JSONArray itemArr = Obj.getJSONArray("data");
-        FirstFragmant first = new FirstFragmant();
-        SecondFragmant second = new SecondFragmant();
+        MyLists first = new MyLists();
+        ItemsList second = new ItemsList();
         first.getListAdapter().clear();
         Log.d("currentTodo", currentTodo);
 
