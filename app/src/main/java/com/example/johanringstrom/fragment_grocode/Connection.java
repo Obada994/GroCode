@@ -18,7 +18,7 @@ import java.io.UnsupportedEncodingException;
  */
 public class Connection extends AppCompatActivity implements MqttCallback {
     protected static MqttAndroidClient  client;
-    private String clientId = "johan@gmail";
+    private String clientId = "Johan";
     private int qos = 1;
     private static String currentTodo;
     private String TAG;
@@ -173,22 +173,28 @@ public class Connection extends AppCompatActivity implements MqttCallback {
         //Create a jason object that does not fullfill the rfc exactly jet. It takes a objecct like this “data”:[”item1”, ”item2”…]
         JSONObject Obj = new JSONObject(new String(message.getPayload()));
         JSONArray itemArr = Obj.getJSONArray("data");
-        MyLists first = new MyLists();
-        ItemsList second = new ItemsList();
-        first.getListAdapter().clear();
+
         Log.d("currentTodo", currentTodo);
 
 
         if (currentTodo.equals("getListsOfLists")) {
-            first.getListAdapter().clear();
+            MyLists myLists = new MyLists();
+            myLists.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++)
-                first.getListAdapter().add(itemArr.get(i).toString());
+               myLists.getListAdapter().add(itemArr.get(i).toString());
         }
 
         if (currentTodo.equals("getList")) {
-            second.getListAdapter().clear();
+            ItemsList myItems = new ItemsList();
+            myItems.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++)
-                second.getListAdapter().add(itemArr.get(i).toString());
+                myItems.getListAdapter().add(itemArr.get(i).toString());
+        }
+        if (currentTodo.equals("getSubscriptionLists")) {
+            ItemsList mySubLists = new ItemsList();
+            mySubLists.getListAdapter().clear();
+            for (int i = 0; i < itemArr.length(); i++)
+                mySubLists.getListAdapter().add(itemArr.get(i).toString());
         }
     }
     //Get client

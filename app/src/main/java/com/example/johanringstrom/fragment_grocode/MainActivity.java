@@ -106,12 +106,20 @@ public class MainActivity extends AppCompatActivity
 
 
         } if (id == R.id.share_lists) {
+            fragmentManager.beginTransaction().replace(R.id.content_frame, new ShareLists()).commit();
 
-            fragmentManager.beginTransaction().replace(R.id.content_frame, new ItemsList()).commit();
-            con.publish("getSubscriptionLists", "Test", "Test");
+            if(con.getClient().isConnected()) {
+                Log.d("StateTest", "true");
 
-            setTitle(getString(R.string.title_section2));
-            fragmentManager.beginTransaction().replace(R.id.content_frame, new ItemsList()).commit();
+                //Starts to subscribe;
+                con.subscribeToTopic();
+                //Publish a request
+                con.publish("getSubscriptionLists", "Test", "Test");
+            } else {
+                Log.d("StateTest", "false");
+                Toast.makeText(MainActivity.this, "Not connected to the broker mother father", Toast.LENGTH_LONG).show();
+
+            };
 
 
         } if (id == R.id.notifications) {
