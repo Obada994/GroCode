@@ -65,7 +65,7 @@ public class MyLists extends Fragment{
         btnAdd.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 con.publish("createList", EditText.getText().toString(), "Test");
-                con.publish("getListsOfLists", "Test", "Test");
+                con.publish("getListsOfLists");
 
             }
         });

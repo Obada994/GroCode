@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //Creates a connection
+        //Creates a Connection object
         con = new Connection(MainActivity.this, MainActivity.this);
 
 
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity
                 //Starts to subscribe;
                 con.subscribeToTopic();
                 //Publish a request
-                con.publish("getListsOfLists", "Test", "Test");
+                con.publish("getListsOfLists");
             } else {
                 Log.d("StateTest", "false");
                 Toast.makeText(MainActivity.this, "Not connected to the broker mother father", Toast.LENGTH_LONG).show();
@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity
 
 
         } if (id == R.id.share_lists) {
+            setTitle("Shared Lists");
             fragmentManager.beginTransaction().replace(R.id.content_frame, new ShareLists()).commit();
 
             if(con.getClient().isConnected()) {
@@ -114,7 +115,7 @@ public class MainActivity extends AppCompatActivity
                 //Starts to subscribe;
                 con.subscribeToTopic();
                 //Publish a request
-                con.publish("getSubscriptionLists", "Test", "Test");
+                con.publish("getSubscriptionLists");
             } else {
                 Log.d("StateTest", "false");
                 Toast.makeText(MainActivity.this, "Not connected to the broker mother father", Toast.LENGTH_LONG).show();

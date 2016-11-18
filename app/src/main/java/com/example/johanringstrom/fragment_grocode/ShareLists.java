@@ -64,8 +64,8 @@ public class ShareLists extends Fragment{
         final Button btnAdd = (Button) myView.findViewById(R.id.add);
         btnAdd.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                con.publish("createList", EditText.getText().toString(), "Test");
-                con.publish("getListsOfLists", "Test", "Test");
+
+
 
             }
         });

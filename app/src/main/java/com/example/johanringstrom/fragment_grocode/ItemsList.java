@@ -62,7 +62,7 @@ public class ItemsList extends Fragment{
         btnAdd.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 con.publish("add", ListName, EditText.getText().toString());
-                con.publish("getList", ListName, "Test");
+                con.publish("getList", ListName);
 
             }
         });

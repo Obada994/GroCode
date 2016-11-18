@@ -25,6 +25,7 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.input_password) EditText _passwordText;
     @BindView(R.id.btn_login) Button _loginButton;
     @BindView(R.id.link_signup) TextView _signupLink;
+    Connection con;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,14 +34,18 @@ public class LoginActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
 
-
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
+
+                //Creates a connection
+                con = new Connection(LoginActivity.this, LoginActivity.this);
+
                 Intent intent = new Intent(getApplicationContext(),MainActivity.class);
                 startActivity(intent);
                 //login();
+
             }
         });
 

@@ -87,6 +87,63 @@ public class Connection extends AppCompatActivity implements MqttCallback {
         }
     }
 
+    public void publish(String addOrDeleteOrCreate, String listName) {
+        //Make  a Jsonobject following our RFC. Waiting to get it aproved
+        currentTodo = addOrDeleteOrCreate;
+        String topic = "Gro/"+ clientId;
+        JSONObject obj = new JSONObject();
+        JSONObject obj2 = new JSONObject();
+
+        try {
+            obj.put("clientId", clientId);
+            obj.put("list", listName);
+            obj.put("request", addOrDeleteOrCreate);
+            obj.put("data", obj2.put("item", "item"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JSONObject payload = obj;
+
+        byte[] encodedPayload = new byte[0];
+        try {
+            encodedPayload = payload.toString().getBytes("UTF-8");
+            MqttMessage itemMsg = new MqttMessage(encodedPayload);
+            client.publish(topic, itemMsg);
+        } catch (UnsupportedEncodingException | MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void publish(String addOrDeleteOrCreate) {
+        //Make  a Jsonobject following our RFC. Waiting to get it aproved
+        currentTodo = addOrDeleteOrCreate;
+        String topic = "Gro/"+ clientId;
+        JSONObject obj = new JSONObject();
+        JSONObject obj2 = new JSONObject();
+
+        try {
+            obj.put("clientId", clientId);
+            obj.put("list", "listName");
+            obj.put("request", addOrDeleteOrCreate);
+            obj.put("data", obj2.put("item", "item"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JSONObject payload = obj;
+
+        byte[] encodedPayload = new byte[0];
+        try {
+            encodedPayload = payload.toString().getBytes("UTF-8");
+            MqttMessage itemMsg = new MqttMessage(encodedPayload);
+            client.publish(topic, itemMsg);
+        } catch (UnsupportedEncodingException | MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
     //Subscribe to a predefined topic
     public  void subscribeToTopic() {
         //Subscribe to root client + client
@@ -191,7 +248,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
                 myItems.getListAdapter().add(itemArr.get(i).toString());
         }
         if (currentTodo.equals("getSubscriptionLists")) {
-            ItemsList mySubLists = new ItemsList();
+            ShareLists mySubLists = new ShareLists();
             mySubLists.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++)
                 mySubLists.getListAdapter().add(itemArr.get(i).toString());
