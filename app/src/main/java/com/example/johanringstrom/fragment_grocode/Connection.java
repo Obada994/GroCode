@@ -18,12 +18,49 @@ import java.io.UnsupportedEncodingException;
  */
 public class Connection extends AppCompatActivity implements MqttCallback {
     protected static MqttAndroidClient  client;
-    private String clientId = "johan@gmail";
+    private static String clientId;
     private int qos = 1;
     private static String currentTodo;
     private String TAG;
 
-    public Connection(final Context context,  final Activity activity){
+    public Connection(final Context context, String clientId){
+
+        if(client == null) {
+            this.clientId = clientId;
+            //Set clientId and create new create a MqttAndroid client
+            //String clientId = MqttClient.generateClientId();
+            this.client =
+                    new MqttAndroidClient(context, "tcp://test.mosquitto.org:1883",
+                            //Tryes to connect this client to a the  broker. test.mosquitto.org
+                            clientId);//"tcp://192.168.43.185:1883
+            try {
+                IMqttToken token = client.connect();
+                token.setActionCallback(new IMqttActionListener() {
+                    public String TAG;
+
+                    @Override
+                    public void onSuccess(IMqttToken asyncActionToken) {
+                        // We are connected
+                        Log.d(TAG, "onSuccess");
+                    }
+
+                    @Override
+                    public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                        // Something went wrong e.g. connection timeout or firewall problems
+                        Log.d(TAG, "onFailure");
+
+                    }
+                });
+            } catch (MqttException e) {
+                e.printStackTrace();
+            }
+
+            client.setCallback(this);
+        }
+
+    }
+
+    public Connection(final Context context){
 
         if(client == null) {
             //Set clientId and create new create a MqttAndroid client
@@ -71,6 +108,63 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             obj.put("list", listName);
             obj.put("request", addOrDeleteOrCreate);
             obj.put("data", obj2.put("item", item));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JSONObject payload = obj;
+
+        byte[] encodedPayload = new byte[0];
+        try {
+            encodedPayload = payload.toString().getBytes("UTF-8");
+            MqttMessage itemMsg = new MqttMessage(encodedPayload);
+            client.publish(topic, itemMsg);
+        } catch (UnsupportedEncodingException | MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void publish(String addOrDeleteOrCreate, String listName) {
+        //Make  a Jsonobject following our RFC. Waiting to get it aproved
+        currentTodo = addOrDeleteOrCreate;
+        String topic = "Gro/"+ clientId;
+        JSONObject obj = new JSONObject();
+        JSONObject obj2 = new JSONObject();
+
+        try {
+            obj.put("clientId", clientId);
+            obj.put("list", listName);
+            obj.put("request", addOrDeleteOrCreate);
+            obj.put("data", obj2.put("item", "item"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JSONObject payload = obj;
+
+        byte[] encodedPayload = new byte[0];
+        try {
+            encodedPayload = payload.toString().getBytes("UTF-8");
+            MqttMessage itemMsg = new MqttMessage(encodedPayload);
+            client.publish(topic, itemMsg);
+        } catch (UnsupportedEncodingException | MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void publish(String addOrDeleteOrCreate) {
+        //Make  a Jsonobject following our RFC. Waiting to get it aproved
+        currentTodo = addOrDeleteOrCreate;
+        String topic = "Gro/"+ clientId;
+        JSONObject obj = new JSONObject();
+        JSONObject obj2 = new JSONObject();
+
+        try {
+            obj.put("clientId", clientId);
+            obj.put("list", "listName");
+            obj.put("request", addOrDeleteOrCreate);
+            obj.put("data", obj2.put("item", "item"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -173,29 +267,39 @@ public class Connection extends AppCompatActivity implements MqttCallback {
         //Create a jason object that does not fullfill the rfc exactly jet. It takes a objecct like this “data”:[”item1”, ”item2”…]
         JSONObject Obj = new JSONObject(new String(message.getPayload()));
         JSONArray itemArr = Obj.getJSONArray("data");
-        MyLists first = new MyLists();
-        ItemsList second = new ItemsList();
-        first.getListAdapter().clear();
+
         Log.d("currentTodo", currentTodo);
 
-
         if (currentTodo.equals("getListsOfLists")) {
-            first.getListAdapter().clear();
+            MyLists myLists = new MyLists();
+            myLists.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++)
-                first.getListAdapter().add(itemArr.get(i).toString());
+               myLists.getListAdapter().add(itemArr.get(i).toString());
         }
 
         if (currentTodo.equals("getList")) {
-            second.getListAdapter().clear();
+            ItemsList myItems = new ItemsList();
+            myItems.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++)
-                second.getListAdapter().add(itemArr.get(i).toString());
+                myItems.getListAdapter().add(itemArr.get(i).toString());
         }
+        if (currentTodo.equals("getSubscriptionLists")) {
+            ShareLists mySubLists = new ShareLists();
+            mySubLists.getListAdapter().clear();
+            for (int i = 0; i < itemArr.length(); i++)
+                mySubLists.getListAdapter().add(itemArr.get(i).toString());
+        }
+        if (currentTodo.equals("getSubList")) {
+            ItemsSubList myItems = new ItemsSubList();
+            myItems.getListAdapter().clear();
+            for (int i = 0; i < itemArr.length(); i++)
+                myItems.getListAdapter().add(itemArr.get(i).toString());
+        }
+
     }
     //Get client
     public MqttAndroidClient getClient(){
         return client;
     }
-
-
 }
 
