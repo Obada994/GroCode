@@ -40,7 +40,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 //Creates a connection
-                con = new Connection(LoginActivity.this, LoginActivity.this);
+
+                con = new Connection(LoginActivity.this, _emailText.getText().toString());
+
 
                 Intent intent = new Intent(getApplicationContext(),MainActivity.class);
                 startActivity(intent);

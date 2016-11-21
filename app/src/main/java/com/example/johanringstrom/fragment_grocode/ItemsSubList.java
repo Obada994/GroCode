@@ -1,26 +1,28 @@
 package com.example.johanringstrom.fragment_grocode;
 
-import android.app.Fragment;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
+
 import java.util.ArrayList;
 
+import static android.R.attr.fragment;
+
 /**
- * Created by johanringstrom on 10/11/16.
+ * Created by johanringstrom on 18/11/16.
  */
-public class ItemsList extends Fragment{
+public class ItemsSubList extends android.app.Fragment {
     View myView;
-    private ListView ListView ;
-    private static  ArrayAdapter<String> listAdapter ;
+    private android.widget.ListView ListView ;
+    private static ArrayAdapter<String> listAdapter ;
     ArrayList<String> GroList;
-    private EditText EditText;
+    private android.widget.EditText EditText;
     String ListName;
-    Object item;
     Connection con;
 
     @Nullable
@@ -33,7 +35,7 @@ public class ItemsList extends Fragment{
         con = new Connection(getActivity());
 
         //Create myList object to get accsess to its methods
-        MyLists myItems = new MyLists();
+        ShareLists myItems = new ShareLists();
         ListName = myItems.getListname();
 
         //List view to display list
@@ -51,8 +53,8 @@ public class ItemsList extends Fragment{
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                    TextView text = (TextView) view;
-                    text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                TextView text = (TextView) view;
+                text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
             }
         });
@@ -61,8 +63,8 @@ public class ItemsList extends Fragment{
         final Button btnAdd = (Button) myView.findViewById(R.id.add);
         btnAdd.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                con.publish("add", ListName, EditText.getText().toString());
-                con.publish("getList", ListName);
+                con.publish("addToSubList", ListName, EditText.getText().toString());
+                con.publish("getSubList", ListName);
 
             }
         });
@@ -70,8 +72,8 @@ public class ItemsList extends Fragment{
 
         return myView;
     }
-        //Gets listadapter
-        public ArrayAdapter<String> getListAdapter(){
-            return this.listAdapter;
-        }
+    //Gets listadapter
+    public ArrayAdapter<String> getListAdapter(){
+        return this.listAdapter;
+    }
 }

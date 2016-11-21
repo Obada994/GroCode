@@ -33,7 +33,7 @@ public class MyLists extends Fragment{
         myView = inflater.inflate(R.layout.first_layout, container, false);
 
         //Creat connection object to get accsess to publish and subscribe
-        con = new Connection(getActivity(), getActivity());
+        con = new Connection(getActivity());
 
         //List view to display list
             ListView = (ListView) myView.findViewById(R.id.listView);
@@ -56,7 +56,7 @@ public class MyLists extends Fragment{
                 list = ListView.getItemAtPosition(position);
                 android.app.FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.content_frame, new ItemsList()).commit();
-                con.publish("getList", list.toString(), "Test");
+                con.publish("getList", list.toString());
             }
         });
 
@@ -64,7 +64,7 @@ public class MyLists extends Fragment{
         final Button btnAdd = (Button) myView.findViewById(R.id.add);
         btnAdd.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                con.publish("createList", EditText.getText().toString(), "Test");
+                con.publish("createList", EditText.getText().toString());
                 con.publish("getListsOfLists");
 
             }

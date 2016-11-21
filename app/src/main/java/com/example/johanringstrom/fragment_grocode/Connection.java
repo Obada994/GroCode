@@ -18,12 +18,49 @@ import java.io.UnsupportedEncodingException;
  */
 public class Connection extends AppCompatActivity implements MqttCallback {
     protected static MqttAndroidClient  client;
-    private String clientId = "Johan";
+    private static String clientId;
     private int qos = 1;
     private static String currentTodo;
     private String TAG;
 
-    public Connection(final Context context,  final Activity activity){
+    public Connection(final Context context, String clientId){
+
+        if(client == null) {
+            this.clientId = clientId;
+            //Set clientId and create new create a MqttAndroid client
+            //String clientId = MqttClient.generateClientId();
+            this.client =
+                    new MqttAndroidClient(context, "tcp://test.mosquitto.org:1883",
+                            //Tryes to connect this client to a the  broker. test.mosquitto.org
+                            clientId);//"tcp://192.168.43.185:1883
+            try {
+                IMqttToken token = client.connect();
+                token.setActionCallback(new IMqttActionListener() {
+                    public String TAG;
+
+                    @Override
+                    public void onSuccess(IMqttToken asyncActionToken) {
+                        // We are connected
+                        Log.d(TAG, "onSuccess");
+                    }
+
+                    @Override
+                    public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                        // Something went wrong e.g. connection timeout or firewall problems
+                        Log.d(TAG, "onFailure");
+
+                    }
+                });
+            } catch (MqttException e) {
+                e.printStackTrace();
+            }
+
+            client.setCallback(this);
+        }
+
+    }
+
+    public Connection(final Context context){
 
         if(client == null) {
             //Set clientId and create new create a MqttAndroid client
@@ -233,7 +270,6 @@ public class Connection extends AppCompatActivity implements MqttCallback {
 
         Log.d("currentTodo", currentTodo);
 
-
         if (currentTodo.equals("getListsOfLists")) {
             MyLists myLists = new MyLists();
             myLists.getListAdapter().clear();
@@ -253,12 +289,17 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             for (int i = 0; i < itemArr.length(); i++)
                 mySubLists.getListAdapter().add(itemArr.get(i).toString());
         }
+        if (currentTodo.equals("getSubList")) {
+            ItemsSubList myItems = new ItemsSubList();
+            myItems.getListAdapter().clear();
+            for (int i = 0; i < itemArr.length(); i++)
+                myItems.getListAdapter().add(itemArr.get(i).toString());
+        }
+
     }
     //Get client
     public MqttAndroidClient getClient(){
         return client;
     }
-
-
 }
 

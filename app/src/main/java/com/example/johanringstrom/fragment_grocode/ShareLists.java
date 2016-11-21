@@ -33,7 +33,7 @@ public class ShareLists extends Fragment{
         myView = inflater.inflate(R.layout.first_layout, container, false);
 
         //Creat connection object to get accsess to publish and subscribe
-        con = new Connection(getActivity(), getActivity());
+        con = new Connection(getActivity());
 
         //List view to display list
             ListView = (ListView) myView.findViewById(R.id.listView);
@@ -55,8 +55,8 @@ public class ShareLists extends Fragment{
                                     int position, long id) {
                 list = ListView.getItemAtPosition(position);
                 android.app.FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content_frame, new ItemsList()).commit();
-                con.publish("getList", list.toString(), "Test");
+                fragmentManager.beginTransaction().replace(R.id.content_frame, new ItemsSubList()).commit();
+                con.publish("getSubList", list.toString(), "Test");
             }
         });
 
