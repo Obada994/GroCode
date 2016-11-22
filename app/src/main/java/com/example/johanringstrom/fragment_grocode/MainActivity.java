@@ -1,19 +1,19 @@
 package com.example.johanringstrom.fragment_grocode;
 
+
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 
 public class MainActivity extends AppCompatActivity
@@ -128,10 +128,11 @@ public class MainActivity extends AppCompatActivity
             setTitle(getString(R.string.title_section3));
             fragmentManager.beginTransaction().replace(R.id.content_frame, new ThirdFragmant()).commit();
 
+            // close connection of user
         } else if (id == R.id.logout) {
-            setTitle(getString(R.string.title_section4));
-            fragmentManager.beginTransaction().replace(R.id.content_frame, new FourthFragmant()).commit();
-        }
+            Toast.makeText(MainActivity.this, "Logout Successful", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

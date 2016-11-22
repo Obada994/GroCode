@@ -5,17 +5,17 @@ package com.example.johanringstrom.fragment_grocode;
  */
 
         import android.app.ProgressDialog;
+        import android.content.Intent;
         import android.os.Bundle;
-        import android.support.v7.app.AppCompatActivity;
-        import android.util.Log;
-        import android.view.View;
-        import android.widget.Button;
-        import android.widget.EditText;
-        import android.widget.TextView;
-        import android.widget.Toast;
-
-        import butterknife.ButterKnife;
-        import butterknife.BindView;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
@@ -43,10 +43,13 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Finish the registration screen and return to the Login activity
-                finish();
-            }
-        });
+                //Toast.makeText(MainActivity.this, "Logout Successful", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                startActivity(intent);        }
+
+            });
     }
+
 
     public void signup() {
         Log.d(TAG, "Signup");
@@ -125,4 +128,5 @@ public class SignupActivity extends AppCompatActivity {
 
         return valid;
     }
+
 }
