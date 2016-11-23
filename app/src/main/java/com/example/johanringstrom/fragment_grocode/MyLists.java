@@ -36,9 +36,6 @@ public class MyLists extends Fragment{
     private TextView voiceText;
     private EditText editText;
 
-
-
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -49,30 +46,30 @@ public class MyLists extends Fragment{
         editText = (EditText) myView.findViewById(R.id.editText);
 
         //Creat connection object to get accsess to publish and subscribe
-        con = new Connection(getActivity());
-
+        con = new Connection(getActivity(),Connection.clientId);
         //List view to display list
-            ListView = (ListView) myView.findViewById(R.id.listView);
-            EditText = (EditText) myView.findViewById(R.id.editText);
+        ListView = (ListView) myView.findViewById(R.id.listView);
+        EditText = (EditText) myView.findViewById(R.id.editText);
 
-            //Create a adapter to listview
-            GroList = new ArrayList<>();
-            listAdapter = new ArrayAdapter<>(getActivity(), R.layout.simplerow, GroList);
-             ListView.setAdapter( listAdapter );
+        //Create a adapter to listview
+        GroList = new ArrayList<>();
+        listAdapter = new ArrayAdapter<>(getActivity(), R.layout.simplerow, GroList);
+        ListView.setAdapter(listAdapter);
 
 
 
-            //Set what to do when a list item is clicked
+        //Set what to do when a list item is clicked
         ListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-            {
+        {
 
-                @Override
+            @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 list = ListView.getItemAtPosition(position);
                 android.app.FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.content_frame, new ItemsList()).commit();
-                con.publish("getList", list.toString());
+                //args[0]=request, args[1]=email, args[2]=list, args[3]=item
+                con.publish("items", new String[]{"fetch",con.clientId,list.toString()});
             }
         });
 
@@ -80,8 +77,9 @@ public class MyLists extends Fragment{
         final Button btnAdd = (Button) myView.findViewById(R.id.add);
         btnAdd.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                con.publish("createList", EditText.getText().toString());
-                con.publish("getListsOfLists");
+                //args[0]=request, args[1]=email, args[2]=list
+                con.publish("lists", new String[]{"add-list",con.clientId,EditText.getText().toString()});//add list
+                con.publish("lists",new String[]{"fetch-lists",con.clientId});//get lists
 
             }
         });

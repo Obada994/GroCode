@@ -3,15 +3,12 @@ package com.example.johanringstrom.fragment_grocode;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 
 import java.util.ArrayList;
-
-import static android.R.attr.fragment;
 
 /**
  * Created by johanringstrom on 18/11/16.
@@ -63,8 +60,8 @@ public class ItemsSubList extends android.app.Fragment {
         final Button btnAdd = (Button) myView.findViewById(R.id.add);
         btnAdd.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                con.publish("addToSubList", ListName, EditText.getText().toString());
-                con.publish("getSubList", ListName);
+               // con.publish("addToSubList", ListName, EditText.getText().toString());
+               // con.publish("getSubList", ListName);
 
             }
         });

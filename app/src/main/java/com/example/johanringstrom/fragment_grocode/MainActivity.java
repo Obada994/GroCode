@@ -13,31 +13,20 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-import org.eclipse.paho.android.service.MqttAndroidClient;
 
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
-
-     protected MqttAndroidClient client;
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
+{
     Connection con;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //Choose starting fragment.
-        android.app.FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, new MyLists()).commit();
-
-        //Set toolbar(actionbar)
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         //Creates a Connection object
-        con = new Connection(MainActivity.this);
+        con = new Connection(MainActivity.this,Connection.clientId);
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -102,9 +91,9 @@ public class MainActivity extends AppCompatActivity
                 Log.d("StateTest", "true");
 
                 //Starts to subscribe;
-                con.subscribeToTopic();
+//                con.subscribeToTopic();
                 //Publish a request
-                con.publish("getListsOfLists");
+                con.publish("lists",new String[]{"fetch-lists",Connection.clientId});
             } else {
                 Log.d("StateTest", "false");
                 Toast.makeText(MainActivity.this, "Not connected to the broker mother father", Toast.LENGTH_LONG).show();
@@ -120,9 +109,9 @@ public class MainActivity extends AppCompatActivity
                 Log.d("StateTest", "true");
 
                 //Starts to subscribe;
-                con.subscribeToTopic();
+//                con.subscribeToTopic();
                 //Publish a request
-                con.publish("getSubscriptionLists");
+//                con.publish("getSubscriptionLists");
             } else {
                 Log.d("StateTest", "false");
                 Toast.makeText(MainActivity.this, "Not connected to the broker mother father", Toast.LENGTH_LONG).show();

@@ -4,9 +4,9 @@ package com.example.johanringstrom.fragment_grocode;
  * Created by Pierre on 2016-11-18.
  */
 
-        import android.app.ProgressDialog;
-        import android.content.Intent;
-        import android.os.Bundle;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -25,13 +25,14 @@ public class SignupActivity extends AppCompatActivity {
     @BindView(R.id.input_password) EditText _passwordText;
     @BindView(R.id.btn_signup) Button _signupButton;
     @BindView(R.id.link_login) TextView _loginLink;
+    Connection conn;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
-
+        conn = new Connection(SignupActivity.this);
         _signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,9 +46,10 @@ public class SignupActivity extends AppCompatActivity {
                 // Finish the registration screen and return to the Login activity
                 //Toast.makeText(MainActivity.this, "Logout Successful", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-                startActivity(intent);        }
+                startActivity(intent);
+            }
 
-            });
+        });
     }
 
 
@@ -70,9 +72,9 @@ public class SignupActivity extends AppCompatActivity {
         String name = _nameText.getText().toString();
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
-
-        // TODO: Implement your own signup logic here.
-
+        conn.clientId=email;
+        //args[0]=request,args[1]=email,args[2]=password,args[3]=name
+        conn.publish("register",new String[]{"register",email,password,name});
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
