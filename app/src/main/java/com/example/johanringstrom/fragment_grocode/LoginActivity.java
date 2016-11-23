@@ -44,9 +44,9 @@ public class LoginActivity extends AppCompatActivity {
                 con = new Connection(LoginActivity.this, _emailText.getText().toString());
 
 
-                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                startActivity(intent);
-                //login();
+                //Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                //startActivity(intent);
+                login();
 
             }
         });
@@ -102,8 +102,10 @@ public class LoginActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
 
                 // TODO: Implement successful signup logic here
+
                 // By default we just finish the Activity and log them in automatically
                 this.finish();
+
             }
         }
     }
@@ -116,6 +118,8 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
+        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+        startActivity(intent);
         finish();
     }
 
