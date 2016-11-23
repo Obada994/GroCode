@@ -38,8 +38,9 @@ public class ItemsList extends Fragment{
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    con.publish("add", ListName, EditText.getText().toString());
-                    con.publish("getList", ListName);
+                    //args[0]=request, args[1]=email, args[2]=list, args[3]=item
+                    con.publish("items", new String[]{"add",con.clientId,ListName, EditText.getText().toString()});
+                    con.publish("items", new String[]{"fetch",con.clientId,ListName});
                     EditText.setText("");
                 }
                 return true;
