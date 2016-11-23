@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 
@@ -26,7 +28,6 @@ public class MyLists extends Fragment{
     private ListView ListView ;
     private static  ArrayAdapter<String> listAdapter ;
     ArrayList<String> GroList;
-    private EditText EditText;
     Connection con;
     private MqttAndroidClient client;
     private static Object list;
@@ -47,13 +48,23 @@ public class MyLists extends Fragment{
         //txtSpeechInput = (TextView) findViewById(R.id.txtSpeechInput);
         btnSpeak = (ImageButton) myView.findViewById(R.id.btnSpeak);
         editText = (EditText) myView.findViewById(R.id.editText);
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    con.publish("createList", editText.getText().toString());
+                    con.publish("getListsOfLists");
+                    editText.setText("");
+                }
+                return true;
+            }
+        });
 
         //Creat connection object to get accsess to publish and subscribe
         con = new Connection(getActivity());
 
         //List view to display list
             ListView = (ListView) myView.findViewById(R.id.listView);
-            EditText = (EditText) myView.findViewById(R.id.editText);
 
             //Create a adapter to listview
             GroList = new ArrayList<>();
@@ -80,7 +91,7 @@ public class MyLists extends Fragment{
         final Button btnAdd = (Button) myView.findViewById(R.id.add);
         btnAdd.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                con.publish("createList", EditText.getText().toString());
+                con.publish("createList", editText.getText().toString());
                 con.publish("getListsOfLists");
 
             }
