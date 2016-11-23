@@ -11,6 +11,7 @@
     <EditText
             android:layout_width="wrap_content"
             android:layout_height="50dp"
+            android:hint="Create List"
             android:id="@+id/editText" android:layout_alignParentTop="true" android:layout_alignParentStart="true"
             android:layout_marginTop="10dp"
             android:layout_alignParentLeft="false" android:layout_toStartOf="@id/add"/>
