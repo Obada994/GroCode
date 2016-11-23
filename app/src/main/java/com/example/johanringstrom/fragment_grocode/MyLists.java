@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 
@@ -84,6 +86,8 @@ public class MyLists extends Fragment{
             }
         });
 
+        EditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
         // hide the action bar
 
         btnSpeak.setOnClickListener(new View.OnClickListener() {
@@ -94,9 +98,24 @@ public class MyLists extends Fragment{
             }
         });
 
+        EditText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId == EditorInfo.IME_ACTION_DONE && event.getAction() == KeyEvent.ACTION_DOWN){
+                    con.publish("createList", EditText.getText().toString());
+                    con.publish("getListsOfLists");
+                }
+                return false;
+            }
+        });
+
 
         return myView;
     }
+
+
+
+
     //Gets listadapter
     public ArrayAdapter<String> getListAdapter(){
         return this.listAdapter;
