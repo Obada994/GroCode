@@ -97,8 +97,9 @@ public class MainActivity extends AppCompatActivity
 
                 //Starts to subscribe;
                 con.subscribeToTopic();
+
                 //Publish a request
-                con.publish("getListsOfLists");
+                con.publish("fetch-lists","Nothing");
             } else {
                 Log.d("StateTest", "false");
                 Toast.makeText(MainActivity.this, "Not connected to the broker mother father", Toast.LENGTH_LONG).show();

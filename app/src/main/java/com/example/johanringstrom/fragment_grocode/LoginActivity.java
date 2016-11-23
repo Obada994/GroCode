@@ -33,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
+        con = new Connection(LoginActivity.this, "Johan");
 
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
@@ -41,7 +42,6 @@ public class LoginActivity extends AppCompatActivity {
 
                 //Creates a connection
 
-                con = new Connection(LoginActivity.this, _emailText.getText().toString());
 
 
                 Intent intent = new Intent(getApplicationContext(),MainActivity.class);

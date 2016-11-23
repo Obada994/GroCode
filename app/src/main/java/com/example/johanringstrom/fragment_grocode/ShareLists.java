@@ -20,7 +20,6 @@ public class ShareLists extends Fragment{
     private ListView ListView ;
     private static  ArrayAdapter<String> listAdapter ;
     ArrayList<String> GroList;
-    private EditText EditText;
     Connection con;
     private MqttAndroidClient client;
     private static Object list;
@@ -30,14 +29,13 @@ public class ShareLists extends Fragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        myView = inflater.inflate(R.layout.first_layout, container, false);
+        myView = inflater.inflate(R.layout.sharelist_layout, container, false);
 
         //Creat connection object to get accsess to publish and subscribe
         con = new Connection(getActivity());
 
         //List view to display list
             ListView = (ListView) myView.findViewById(R.id.listView);
-            EditText = (EditText) myView.findViewById(R.id.editText);
 
             //Create a adapter to listview
             GroList = new ArrayList<>();
@@ -57,16 +55,6 @@ public class ShareLists extends Fragment{
                 android.app.FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.content_frame, new ItemsSubList()).commit();
                 con.publish("getSubList", list.toString(), "Test");
-            }
-        });
-
-        //What to do when the add button is pressed
-        final Button btnAdd = (Button) myView.findViewById(R.id.add);
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-
-
-
             }
         });
 

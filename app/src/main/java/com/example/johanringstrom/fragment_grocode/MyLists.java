@@ -72,7 +72,7 @@ public class MyLists extends Fragment{
                 list = ListView.getItemAtPosition(position);
                 android.app.FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.content_frame, new ItemsList()).commit();
-                con.publish("getList", list.toString());
+                con.publish("fetch", list.toString(),"Nothing");
             }
         });
 
@@ -80,8 +80,9 @@ public class MyLists extends Fragment{
         final Button btnAdd = (Button) myView.findViewById(R.id.add);
         btnAdd.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                con.publish("createList", EditText.getText().toString());
-                con.publish("getListsOfLists");
+                con.publish("add-list", EditText.getText().toString());
+                con.publish("fetch-lists","Nothing");
+                EditText.setText("");
 
             }
         });
