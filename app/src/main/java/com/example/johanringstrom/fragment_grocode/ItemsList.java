@@ -61,8 +61,10 @@ public class ItemsList extends Fragment{
         final Button btnAdd = (Button) myView.findViewById(R.id.add);
         btnAdd.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                con.publish("add", ListName, EditText.getText().toString());
-                con.publish("getList", ListName);
+                //args[0]=request, args[1]=email, args[2]=list, args[3]=item
+                con.publish("items", new String[]{"add",con.clientId,ListName, EditText.getText().toString()});//add item
+                //fetch the updated list
+                con.publish("items", new String[]{"fetch",con.clientId,ListName});
 
             }
         });
