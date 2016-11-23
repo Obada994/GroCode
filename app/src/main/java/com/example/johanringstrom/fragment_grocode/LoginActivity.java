@@ -25,7 +25,8 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.input_password) EditText _passwordText;
     @BindView(R.id.btn_login) Button _loginButton;
     @BindView(R.id.link_signup) TextView _signupLink;
-    Connection con;
+    Connection conn;
+    boolean click;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,19 +34,11 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
-
+        conn = new Connection(LoginActivity.this,"");
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-
-                //Creates a connection
-
-                con = new Connection(LoginActivity.this, _emailText.getText().toString());
-
-
-                //Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                //startActivity(intent);
                 login();
 
             }
@@ -80,15 +73,22 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.show();
 
         String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        //String password = _passwordText.getText().toString();
 
-        // TODO: Implement your own authentication logic here.
-
+        conn.clientId=email;
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
-                        // On complete call either onLoginSuccess or onLoginFailed
-                        onLoginSuccess();
+                        try {
+                            new Thread(){public void run(){conn.subscribeToTopic();}}.start();
+                            boolean res = conn.loggedin(_emailText.getText().toString(),_passwordText.getText().toString());
+                            if(res)
+                                onLoginSuccess();
+                            else
+                                onLoginFailed();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         // onLoginFailed();
                         progressDialog.dismiss();
                     }
@@ -102,10 +102,8 @@ public class LoginActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
 
                 // TODO: Implement successful signup logic here
-
                 // By default we just finish the Activity and log them in automatically
                 this.finish();
-
             }
         }
     }
@@ -125,8 +123,8 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-
         _loginButton.setEnabled(true);
+        conn.unSubscribe();
     }
 
     public boolean validate() {
