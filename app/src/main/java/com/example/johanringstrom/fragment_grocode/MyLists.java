@@ -60,8 +60,6 @@ public class MyLists extends Fragment{
             listAdapter = new ArrayAdapter<>(getActivity(), R.layout.simplerow, GroList);
              ListView.setAdapter( listAdapter );
 
-
-
             //Set what to do when a list item is clicked
         ListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
             {
