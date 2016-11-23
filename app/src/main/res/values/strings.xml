@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Grocode</string>
-    <string name="UserID">User ID</string>
+    <string name="UserID">UserID</string>
 
     <string name="title_section1">My Lists</string>
     <string name="title_section2">Shared Lists</string>

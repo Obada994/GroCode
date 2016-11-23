@@ -9,12 +9,18 @@
             android:id="@+id/listView" android:layout_alignParentTop="true" android:layout_alignParentStart="true"
             android:layout_marginTop="81dp"/>
     <EditText
+            android:inputType="text"
+            android:imeOptions="actionDone"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:hint="Create List"
-            android:id="@+id/editText" android:layout_alignParentTop="true" android:layout_alignParentStart="true"
+            android:id="@+id/editText"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="75dp" android:layout_toStartOf="@+id/add" android:layout_alignEnd="@+id/add"/>
+            android:layout_marginRight="75dp"
+            android:layout_toStartOf="@+id/add"
+            android:layout_alignEnd="@+id/add"/>
     <Button
             android:layout_marginTop="10dp"
             android:layout_width="75dp"

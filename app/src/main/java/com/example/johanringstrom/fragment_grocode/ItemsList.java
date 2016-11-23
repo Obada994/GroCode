@@ -4,9 +4,11 @@ import android.app.Fragment;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 import java.util.ArrayList;
 
@@ -31,6 +33,18 @@ public class ItemsList extends Fragment{
 
         //Create connection object to get access to publish and subscribe
         con = new Connection(getActivity());
+
+        EditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    con.publish("add", ListName, EditText.getText().toString());
+                    con.publish("getList", ListName);
+                    EditText.setText("");
+                }
+                return true;
+            }
+        });
 
         //Create myList object to get accsess to its methods
         MyLists myItems = new MyLists();
