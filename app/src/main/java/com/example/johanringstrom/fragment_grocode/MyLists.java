@@ -45,6 +45,9 @@ public class MyLists extends Fragment{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.first_layout, container, false);
 
+        //Creat connection object to get accsess to publish and subscribe
+        con = new Connection(getActivity());
+
         //txtSpeechInput = (TextView) findViewById(R.id.txtSpeechInput);
         btnSpeak = (ImageButton) myView.findViewById(R.id.btnSpeak);
         editText = (EditText) myView.findViewById(R.id.editText);
@@ -59,9 +62,6 @@ public class MyLists extends Fragment{
                 return true;
             }
         });
-
-        //Creat connection object to get accsess to publish and subscribe
-        con = new Connection(getActivity());
 
         //List view to display list
             ListView = (ListView) myView.findViewById(R.id.listView);
