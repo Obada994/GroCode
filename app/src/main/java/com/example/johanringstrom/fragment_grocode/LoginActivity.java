@@ -73,8 +73,6 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.show();
 
         String email = _emailText.getText().toString();
-        //String password = _passwordText.getText().toString();
-
         conn.clientId=email;
         new android.os.Handler().postDelayed(
                 new Runnable() {
@@ -94,8 +92,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }, 3000);
     }
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_SIGNUP) {
@@ -125,6 +121,10 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
         _loginButton.setEnabled(true);
         conn.unSubscribe();
+    }
+    public void onLoginFailedTest() {
+        _loginButton.setEnabled(true);
+
     }
 
     public boolean validate() {

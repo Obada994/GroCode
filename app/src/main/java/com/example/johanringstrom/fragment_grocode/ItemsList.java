@@ -33,7 +33,7 @@ public class ItemsList extends Fragment{
 
         //Create connection object to get access to publish and subscribe
         con = new Connection(getActivity());
-
+        EditText = (EditText) myView.findViewById(R.id.editText);
         EditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -53,7 +53,6 @@ public class ItemsList extends Fragment{
 
         //List view to display list
         ListView = (ListView) myView.findViewById(R.id.listView);
-        EditText = (EditText) myView.findViewById(R.id.editText);
 
         //Create a adapter to listview
         GroList = new ArrayList<>();
@@ -66,8 +65,8 @@ public class ItemsList extends Fragment{
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                TextView text = (TextView) view;
-                text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    TextView text = (TextView) view;
+                    text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
             }
         });
@@ -87,8 +86,8 @@ public class ItemsList extends Fragment{
 
         return myView;
     }
-    //Gets listadapter
-    public ArrayAdapter<String> getListAdapter(){
-        return this.listAdapter;
-    }
+        //Gets listadapter
+        public ArrayAdapter<String> getListAdapter(){
+            return this.listAdapter;
+        }
 }

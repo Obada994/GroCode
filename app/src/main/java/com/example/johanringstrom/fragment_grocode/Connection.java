@@ -1,12 +1,18 @@
 package com.example.johanringstrom.fragment_grocode;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.*;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 
 
 /**
@@ -65,7 +71,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             //String clientId = MqttClient.generateClientId();
             this.client =
                     new MqttAndroidClient(context, "tcp://test.mosquitto.org:1883",
-                            //Tryes to connect this client to a the  broker. test.mosquitto.org
+            //Tryes to connect this client to a the  broker. test.mosquitto.org
                             clientId);//"tcp://192.168.43.185:1883
             try {
                 IMqttToken token = client.connect();
@@ -139,7 +145,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
                     toSend.put("request",args[0]);
                     //if it's not fetch-lists then we need this key (list)
                     if(!args[0].equals("fetch-lists"))
-                        toSend.put("list",args[2]);
+                    toSend.put("list",args[2]);
                 }catch(Exception e)
                 {
                     e.printStackTrace();
@@ -284,9 +290,12 @@ public class Connection extends AppCompatActivity implements MqttCallback {
         publish("login",new String[]{"login", email,pass});
         try {
             client.publish("Gro/"+clientId,new MqttMessage(new String("loggedIn is: "+loggedin).getBytes()));
+            Thread.sleep(1000);
         } catch (MqttPersistenceException e) {
             e.printStackTrace();
         } catch (MqttException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
         return loggedin;
