@@ -28,6 +28,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //Creates a Connection object
         con = new Connection(MainActivity.this,Connection.clientId);
 
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, new MyLists()).commit();
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
