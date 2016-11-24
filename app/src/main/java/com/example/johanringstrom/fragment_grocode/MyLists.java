@@ -48,27 +48,27 @@ public class MyLists extends Fragment{
         //Creat connection object to get accsess to publish and subscribe
         con = new Connection(getActivity(),Connection.clientId);
         //List view to display list
-        ListView = (ListView) myView.findViewById(R.id.listView);
-        EditText = (EditText) myView.findViewById(R.id.editText);
+            ListView = (ListView) myView.findViewById(R.id.listView);
+            EditText = (EditText) myView.findViewById(R.id.editText);
 
-        //Create a adapter to listview
-        GroList = new ArrayList<>();
-        listAdapter = new ArrayAdapter<>(getActivity(), R.layout.simplerow, GroList);
-        ListView.setAdapter(listAdapter);
+            //Create a adapter to listview
+            GroList = new ArrayList<>();
+            listAdapter = new ArrayAdapter<>(getActivity(), R.layout.simplerow, GroList);
+            ListView.setAdapter(listAdapter);
 
 
 
-        //Set what to do when a list item is clicked
+            //Set what to do when a list item is clicked
         ListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
+            {
 
-            @Override
+                @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 list = ListView.getItemAtPosition(position);
                 android.app.FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.content_frame, new ItemsList()).commit();
-                //args[0]=request, args[1]=email, args[2]=list, args[3]=item
+                    //args[0]=request, args[1]=email, args[2]=list, args[3]=item
                 con.publish("items", new String[]{"fetch",con.clientId,list.toString()});
             }
         });
