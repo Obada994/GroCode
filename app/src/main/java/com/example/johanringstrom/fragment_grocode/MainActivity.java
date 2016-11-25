@@ -1,37 +1,40 @@
 package com.example.johanringstrom.fragment_grocode;
 
+
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.MqttException;
 
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
-
-     protected MqttAndroidClient client;
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
+{
     Connection con;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Choose starting fragment.
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, new MyLists()).commit();
+
+        //Set toolbar(actionbar)
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         //Creates a Connection object
-        con = new Connection(MainActivity.this);
+        con = new Connection(MainActivity.this,Connection.clientId);
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -43,6 +46,11 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        if(!con.loggedin)
+        {
+            Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+            startActivity(intent);
+        }
     }
 
 
@@ -96,10 +104,9 @@ public class MainActivity extends AppCompatActivity
                 Log.d("StateTest", "true");
 
                 //Starts to subscribe;
-                con.subscribeToTopic();
-
+//                con.subscribeToTopic();
                 //Publish a request
-                con.publish("fetch-lists","Nothing");
+                con.publish("lists",new String[]{"fetch-lists",Connection.clientId});
             } else {
                 Log.d("StateTest", "false");
                 Toast.makeText(MainActivity.this, "Not connected to the broker mother father", Toast.LENGTH_LONG).show();
@@ -115,9 +122,9 @@ public class MainActivity extends AppCompatActivity
                 Log.d("StateTest", "true");
 
                 //Starts to subscribe;
-                con.subscribeToTopic();
+//                con.subscribeToTopic();
                 //Publish a request
-                con.publish("getSubscriptionLists");
+//                con.publish("getSubscriptionLists");
             } else {
                 Log.d("StateTest", "false");
                 Toast.makeText(MainActivity.this, "Not connected to the broker mother father", Toast.LENGTH_LONG).show();
@@ -129,10 +136,11 @@ public class MainActivity extends AppCompatActivity
             setTitle(getString(R.string.title_section3));
             fragmentManager.beginTransaction().replace(R.id.content_frame, new ThirdFragmant()).commit();
 
+            // close connection of user
         } else if (id == R.id.logout) {
-            setTitle(getString(R.string.title_section4));
-            fragmentManager.beginTransaction().replace(R.id.content_frame, new FourthFragmant()).commit();
-        }
+            Toast.makeText(MainActivity.this, "Logout Successful", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

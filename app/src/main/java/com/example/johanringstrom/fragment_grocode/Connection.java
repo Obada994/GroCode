@@ -2,6 +2,7 @@ package com.example.johanringstrom.fragment_grocode;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import org.eclipse.paho.android.service.MqttAndroidClient;
@@ -18,11 +19,14 @@ import java.util.ArrayList;
  * Created by johanringstrom on 05/11/16.
  */
 public class Connection extends AppCompatActivity implements MqttCallback {
-    protected static MqttAndroidClient  client;
-    private static String clientId;
+
+    static MqttAndroidClient client;
+    static String clientId;
     private int qos = 1;
     private static String currentTodo;
     private String TAG;
+    static boolean loggedin;
+    static boolean sub;
 
     public Connection(final Context context, String clientId){
 
@@ -31,7 +35,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             //Set clientId and create new create a MqttAndroid client
             //String clientId = MqttClient.generateClientId();
             this.client =
-                    new MqttAndroidClient(context, "tcp://test.mosquitto.org:1883",
+                    new MqttAndroidClient(context, "tcp://broker.hivemq.com:1883",
                             //Tryes to connect this client to a the  broker. test.mosquitto.org
                             clientId);//"tcp://192.168.43.185:1883
             try {
@@ -54,8 +58,8 @@ public class Connection extends AppCompatActivity implements MqttCallback {
                 });
             } catch (MqttException e) {
                 e.printStackTrace();
-
             }
+
             client.setCallback(this);
         }
 
@@ -67,7 +71,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             //Set clientId and create new create a MqttAndroid client
             //String clientId = MqttClient.generateClientId();
             this.client =
-                    new MqttAndroidClient(context, "tcp://test.mosquitto.org:1883",
+                    new MqttAndroidClient(context, "tcp://broker.hivemq.com:1883",
             //Tryes to connect this client to a the  broker. test.mosquitto.org
                             clientId);//"tcp://192.168.43.185:1883
             try {
@@ -96,117 +100,91 @@ public class Connection extends AppCompatActivity implements MqttCallback {
         }
 
     }
-    //publish to get/add/delete lists
-    void publish(String request, String listName)
+    //publish
+    void publish(String type,String[] args)
     {
-        currentTodo = request;
-        String str;
-       if(!request.equals("fetch-lists"))
-            str = "{\"client_id\":\""+clientId+"\",\"request\":\""+request+"\",\"list\":\""+listName+"\"}";
-        else
-            str = "{\"client_id\":\""+clientId+"\",\"request\":\""+request+"\"}";
-        MqttMessage itemMsg = new MqttMessage(str.getBytes());
+        //save the request to help reading the reply from the server
+        currentTodo = type;
+        String topic="Gro/"+clientId;
+        JSONObject toSend=new JSONObject();
+        JSONObject data=new JSONObject();
+        switch(type)
+        {
+            case "login":
+                //args[0]=request,args[1]=email,args[2]=password
+                try
+                {
+                    //{"request":"args[0]","data":{"email":"args[1]","password":"args[2]"}}
+                    toSend.put("request",args[0]);
+                    data.put("email",args[1]);
+                    data.put("password",args[2]);
+                    toSend.put("data",data);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            case "register":
+                //args[0]=request,args[1]=email,args[2]=password,args[3]=name
+                try
+                {
+                    //{"request":"args[0]","data":{"email":"args[1]","password":"args[2]","name":"args[3]"}}
+                    toSend.put("request",args[0]);
+                    data.put("email",args[1]);
+                    data.put("password",args[2]);
+                    data.put("name",args[3]);
+                    toSend.put("data",data);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            case "lists":
+                //args[0]=request, args[1]=email, args[2]=list
+                try
+                {
+                    //{"client_id":args[1],"request":args[0],"list":args[2]} or {"client_id":args[2],"request":"fetch-lists"}
+                    toSend.put("client_id",args[1]);
+                    toSend.put("request",args[0]);
+                    //if it's not fetch-lists then we need this key (list)
+                    if(!args[0].equals("fetch-lists"))
+                    toSend.put("list",args[2]);
+                }catch(Exception e)
+                {
+                    e.printStackTrace();
+                }
+                break;
+            case "items":
+                //args[0]=request, args[1]=email, args[2]=list, args[3]=item
+                try {
+                    //{"client_id":"beroo75@gmail.com","list":"home","request":"add","data":{"item":"apple"}} or {"client_id":"beroo75@gmail.com","list":"home","request":"fetch"}
+                    toSend.put("client_id", args[1]);
+                    toSend.put("list", args[2]);
+                    toSend.put("request",args[0]);
+                    //if it's not fetch then we need this key (data)
+                    if (!args[0].equals("fetch"))
+                    {
+                        data.put("item",args[3]);
+                        toSend.put("data",data);
+                    }
+                }catch(Exception e)
+                {
+                    e.printStackTrace();
+                }
+                break;
+            default:
+
+        }
+        //send here after we have defined the object
         try {
-            client.publish("Gro/"+clientId,itemMsg);
+            client.publish(topic,new MqttMessage(toSend.toString().getBytes()));
         } catch (MqttException e) {
             e.printStackTrace();
         }
+
     }
-    //add/del/fetch items from a list
-    public void publish(String request, String listName, String item) {
-        //Make  a Jsonobject following our RFC. Waiting to get it aproved
-        currentTodo = request;
-        String topic = "Gro/"+ clientId;
-        JSONObject obj = new JSONObject();
-        JSONObject obj2 = new JSONObject();
-
-        try {
-            obj.put("client_id", clientId);
-            obj.put("list", listName);
-            obj.put("request", request);
-            if(!request.equals("fetch"))
-            obj.put("data", obj2.put("item", item));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JSONObject payload = obj;
-
-        byte[] encodedPayload = new byte[0];
-        try {
-            encodedPayload = payload.toString().getBytes("UTF-8");
-            MqttMessage itemMsg = new MqttMessage(encodedPayload);
-            client.publish(topic, itemMsg);
-        } catch (UnsupportedEncodingException | MqttException e) {
-            e.printStackTrace();
-        }
-    }
-        //login/register
-        void publish(String email, String pass, String name,String request) {
-        //Make  a Jsonobject following our RFC. Waiting to get it aproved
-        currentTodo = request;
-        String topic = "Gro/"+ clientId;
-        JSONObject obj = new JSONObject();
-        JSONObject obj2 = new JSONObject();
-
-        try {
-            obj.put("request", request);
-            obj2.put("email", email);
-            obj2.put("password",pass);
-            if (request.equals("register"))
-                obj2.put("name",name);
-            obj.put("data", obj2);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JSONObject payload = obj;
-
-        byte[] encodedPayload = new byte[0];
-        try {
-            encodedPayload = payload.toString().getBytes("UTF-8");
-            System.out.println("is it null: "+ payload.toString());
-            MqttMessage itemMsg = new MqttMessage(encodedPayload);
-            client.publish(topic, itemMsg);
-        } catch (UnsupportedEncodingException | MqttException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    public void publish(String request) {
-        //Make  a Jsonobject following our RFC. Waiting to get it aproved
-        currentTodo = request;
-        String topic = "Gro/"+ clientId;
-        JSONObject obj = new JSONObject();
-        JSONObject obj2 = new JSONObject();
-
-        try {
-            obj.put("clientId", clientId);
-            obj.put("list", "listName");
-            obj.put("request", request);
-            obj.put("data", obj2.put("item", "item"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JSONObject payload = obj;
-
-        byte[] encodedPayload = new byte[0];
-        try {
-            encodedPayload = payload.toString().getBytes("UTF-8");
-            MqttMessage itemMsg = new MqttMessage(encodedPayload);
-            client.publish(topic, itemMsg);
-        } catch (UnsupportedEncodingException | MqttException e) {
-            e.printStackTrace();
-        }
-    }
-
     //Subscribe to a predefined topic
     public  void subscribeToTopic() {
         //Subscribe to root client + client
-        String topic = "Gro/"+ clientId+ "/#";
-        Log.d("TopicTest", topic);
+        String topic = "Gro/"+clientId;
         try {
             IMqttToken subToken = client.subscribe(topic, qos);
             subToken.setActionCallback(new IMqttActionListener() {
@@ -228,11 +206,9 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             e.printStackTrace();
         }
     }
-
-
     //Unsubscribe to predefined list.
     public void unSubscribe(){
-        String topic = "RootClient/"+ clientId+ "/#";
+        String topic = "Gro/"+clientId;
         try {
             IMqttToken unsubToken = client.unsubscribe(topic);
             unsubToken.setActionCallback(new IMqttActionListener() {
@@ -253,10 +229,6 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             e.printStackTrace();
         }
     }
-
-
-
-
     public void connectionLost(Throwable cause) {
         // Called when the connection to the server has been lost.
         // An application may choose to implement reconnection
@@ -264,126 +236,75 @@ public class Connection extends AppCompatActivity implements MqttCallback {
         Log.d(TAG, "Connection to " + "broker." + " lost!");
         System.exit(1);
     }
-
-    public void deliveryComplete(IMqttDeliveryToken token) {
-        // Called when a message has been delivered to the hhahaha test
-        // server. The token passed in here is the same one
-        // that was passed to or returned from the original call to publish.
-        // This allows applications to perform asynchronous
-        // delivery without blocking until delivery completes.
-        //
-        // This sample demonstrates asynchronous deliver and
-        // uses the token.waitForCompletion() call in the main thread which
-        // blocks until the delivery has completed.
-        // Additionally the deliveryComplete method will be called if
-        // the callback is set on the client
-        //
-        // If the connection to the server breaks before delivery has completed
-        // delivery of a message will complete after the client has re-connected.
-        // The getPendingTokens method will provide tokens for any messages
-        // that are still to be delivered.
-    }
-
-    //Get messages on the subscribed message. Clears listview and add the received message split up to a array.
-    public void messageArrived(String topic, MqttMessage message ) throws Exception {
-        //Create a jason object that does not fullfill the rfc exactly jet. It takes a objecct like this “data”:[”item1”, ”item2”…]
-
+    public void deliveryComplete(IMqttDeliveryToken token) {}
+    public void messageArrived(String topic, MqttMessage message) throws Exception {
         JSONObject Obj = new JSONObject(new String(message.getPayload()));
-        JSONArray itemArr = Obj.getJSONArray("data");
-        /*try {*/
-        /*    Obj = new JSONObject(new String(message.getPayload()));*/
-        /*} catch (JSONException e) {*/
-        /*    e.printStackTrace();*/
-        /*}*/
-        /*if(Obj.has("data"))*/
-        /*    try {*/
-        /*        itemArr = Obj.getJSONArray("data");*/
-        /*    } catch (JSONException e) {*/
-        /*        e.printStackTrace();*/
-        /*    }*/
-
-
-
-        /*if (currentTodo.equals("fetch")) {*/
-        /*    MyLists myLists = new MyLists();*/
-        /*    myLists.getListAdapter().clear();*/
-        /*    for (int i = 0; i < itemArr.length(); i++)*/
-        /*       myLists.getListAdapter().add(itemArr.get(i).toString());*/
-        /*}*/
-/*
-*/
-
-        /*if (currentTodo.equals("getList")) {*/
-        /*    ItemsList myItems = new ItemsList();*/
-        /*    myItems.getListAdapter().clear();*/
-        /*    for (int i = 0; i < itemArr.length(); i++)*/
-        /*        myItems.getListAdapter().add(itemArr.get(i).toString());*/
-        /*}*/
-        /*if (currentTodo.equals("getSubscriptionLists")) {*/
-        /*    ShareLists mySubLists = new ShareLists();*/
-        /*    mySubLists.getListAdapter().clear();*/
-        /*    for (int i = 0; i < itemArr.length(); i++)*/
-        /*        mySubLists.getListAdapter().add(itemArr.get(i).toString());*/
-        /*}*/
-        /*if (currentTodo.equals("getSubList")) {*/
-        /*    ItemsSubList myItems = new ItemsSubList();*/
-        /*    myItems.getListAdapter().clear();*/
-        /*    for (int i = 0; i < itemArr.length(); i++)*/
-        /*        myItems.getListAdapter().add(itemArr.get(i).toString());*/
-        /*}*/
+        //if it's not a reply from the server then just ignore it
+        if (!Obj.has("reply"))
+            return;
+        JSONArray itemArr = null;
+        //get the array if the key data exsits
+        if (Obj.has("data"))
+            itemArr = Obj.getJSONArray("data");
         Log.d("currentTodo", currentTodo);
-        String reply;
-        switch(currentTodo)
-        {   //fetch items from a list/or list names
-            case "fetch":
-                try {
-                    ItemsList myItems = new ItemsList();
-                    myItems.getListAdapter().clear();
-                    if(Obj.get("reply").equals("error"))
-                        ;//update activity with an empty list
-                    else
-                        for (int i = 0; i < itemArr.length(); i++) {
-                            JSONObject jsonobject = itemArr.getJSONObject(i);
-                            myItems.getListAdapter().add(jsonobject.getString("item"));
-                        }
-                        //read data items and update activity
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                break;
-            //fetch list
-            case "fetch-lists":
-                try {
-                     MyLists myLists = new MyLists();
-                    myLists.getListAdapter().clear();
-                    if(Obj.get("reply").equals("error"))
-                        ;//update activity with an empty list
-                    else
-                        for (int i = 0; i < itemArr.length(); i++) {
-                            JSONObject jsonobject = itemArr.getJSONObject(i);
-                            myLists.getListAdapter().add(jsonobject.getString("item"));
-
-                        }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                break;
-            //it's just a reply
-            default:
-                try {
-                    //either done or error
-                    String res = Obj.getString("reply");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+        // {"reply":"done","data":[{"item":"home"}]}
+        //if the data are list names then update the list activities
+        if (currentTodo.equals("login") || currentTodo.equals("register")) {
+            if (message.toString().equals("{\"reply\":\"done\"}")) {
+                loggedin = true;
+            } else
+            {
+                loggedin=false;
+                sub=false;
+            }
         }
-        //read data update activities and read the reply
+        if (currentTodo.equals("lists")) {
+            MyLists myLists = new MyLists();
+            myLists.getListAdapter().clear();
+            for(int i=0; i<itemArr.length(); i++)
+            {
+                myLists.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
+            }
+        }
+        // if the data are items update the items activities
+        if (currentTodo.equals("items")) {
+            ItemsList myItems = new ItemsList();
+            myItems.getListAdapter().clear();
+            for (int i = 0; i < itemArr.length(); i++)
+                myItems.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
+        }
+        if (currentTodo.equals("getSubscriptionLists")) {//TODO
+            ShareLists mySubLists = new ShareLists();
+            mySubLists.getListAdapter().clear();
+            for (int i = 0; i < itemArr.length(); i++)
+                mySubLists.getListAdapter().add(itemArr.get(i).toString());
+        }
+        if (currentTodo.equals("getSubList")) {//TODO
+            ItemsSubList myItems = new ItemsSubList();
+            myItems.getListAdapter().clear();
+            for (int i = 0; i < itemArr.length(); i++)
+                myItems.getListAdapter().add(itemArr.get(i).toString());
+        }
+
     }
+    boolean loggedin(String email,String pass)
+    {
+        publish("login",new String[]{"login", email,pass});
+        try {
+            client.publish("Gro/"+clientId,new MqttMessage(new String("loggedIn is: "+loggedin).getBytes()));
+            Thread.sleep(1000);
+        } catch (MqttPersistenceException e) {
+            e.printStackTrace();
+        } catch (MqttException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return loggedin;
+    }
+
     //Get client
     public MqttAndroidClient getClient(){
         return client;
     }
 }
-
-

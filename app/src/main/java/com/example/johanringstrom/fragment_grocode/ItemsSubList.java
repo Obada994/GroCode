@@ -63,8 +63,8 @@ public class ItemsSubList extends android.app.Fragment {
         final Button btnAdd = (Button) myView.findViewById(R.id.add);
         btnAdd.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                con.publish("addToSubList", ListName, EditText.getText().toString());
-                con.publish("getSubList", ListName);
+//                con.publish("addToSubList", ListName, EditText.getText().toString());
+//                con.publish("getSubList", ListName);
 
             }
         });
