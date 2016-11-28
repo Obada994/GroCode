@@ -43,9 +43,6 @@ public class LoginActivity extends AppCompatActivity {
                 login();
 //                if(click)
 //                    _loginButton.callOnClick();
-
-
-
             }
         });
 
@@ -183,4 +180,12 @@ public class LoginActivity extends AppCompatActivity {
 
         return valid;
     }
+
+    //Fixes leaked ServiceConnection
+    
+    @Override
+    public void finish() {
+        conn = null;
+    }
+
 }

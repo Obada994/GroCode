@@ -7,17 +7,13 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
+import android.view.*;
 import android.widget.*;
+
 import java.util.ArrayList;
 import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
-import static com.example.johanringstrom.fragment_grocode.R.id.editText;
 
 /**
  * Created by johanringstrom on 10/11/16.
@@ -43,6 +39,7 @@ public class ItemsList extends Fragment{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         //ListName =getArguments().getString("ListName");
         myView = inflater.inflate(R.layout.itemslist_layout, container, false);
+        setHasOptionsMenu(true);
 
         //Create connection object to get access to publish and subscribe
         con = new Connection(getActivity());
@@ -143,6 +140,8 @@ public class ItemsList extends Fragment{
             }
         });
 
+
+
         return myView;
     }
     //Gets listadapter
@@ -170,6 +169,8 @@ public class ItemsList extends Fragment{
         }
     }
 
+
+
     /**
      * Receiving speech input
      */
@@ -189,5 +190,10 @@ public class ItemsList extends Fragment{
             }
 
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        inflater.inflate(R.menu.list, menu);
     }
 }
