@@ -20,13 +20,16 @@ import java.util.ArrayList;
  */
 public class Connection extends AppCompatActivity implements MqttCallback {
 
+
     static MqttAndroidClient client;
+
     static String clientId;
     private int qos = 1;
     private static String currentTodo;
     private String TAG;
     static boolean loggedin;
     static boolean sub;
+
 
     public Connection(final Context context, String clientId){
 
@@ -171,6 +174,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
                     e.printStackTrace();
                 }
                 break;
+
             case "boughtItems":
                 //args[0]=request, args[1]=email, args[2]=list, args[3]=item
                 try {
@@ -189,6 +193,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
                     e.printStackTrace();
                 }
                 break;
+
             default:
 
         }
@@ -268,13 +273,16 @@ public class Connection extends AppCompatActivity implements MqttCallback {
         Log.d("currentTodo", currentTodo);
         // {"reply":"done","data":[{"item":"home"}]}
         //if the data are list names then update the list activities
+
         if (currentTodo.equals("login") || currentTodo.equals("register")) {
+
             if (message.toString().equals("{\"reply\":\"done\"}")) {
                 loggedin = true;
             } else
             {
                 loggedin=false;
-                sub=false;
+               // sub=false;
+
             }
         }
         if (currentTodo.equals("lists")) {
@@ -286,17 +294,20 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             }
         }
         // if the data are items update the items activities
-        if (currentTodo.equals("items") ) {
+
+        if (currentTodo.equals("items")) {
             ItemsList myItems = new ItemsList();
             myItems.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++)
                 myItems.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
+
         }
         if (currentTodo.equals("boughtItems")) {
             ItemsList myBoughtItems = new ItemsList();
             myBoughtItems.getListAdapterBought().clear();
             for (int i = 0; i < itemArr.length(); i++)
                 myBoughtItems.getListAdapterBought().add((String) itemArr.getJSONObject(i).get("item"));
+
         }
         if (currentTodo.equals("getSubscriptionLists")) {//TODO
             ShareLists mySubLists = new ShareLists();

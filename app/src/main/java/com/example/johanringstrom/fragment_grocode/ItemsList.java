@@ -50,6 +50,9 @@ public class ItemsList extends Fragment{
         editText = (EditText) myView.findViewById(R.id.editText);
         EditText = (EditText) myView.findViewById(R.id.editText);
        /* EditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+        EditText = (EditText) myView.findViewById(R.id.editText);
+        EditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -70,6 +73,7 @@ public class ItemsList extends Fragment{
         //List view to display list
         ListView = (ListView) myView.findViewById(R.id.listView);
         ListView2 = (ListView) myView.findViewById(R.id.listView2);
+
 
         //Create a adapter to listview
         GroList = new ArrayList<>();
@@ -115,6 +119,8 @@ public class ItemsList extends Fragment{
                 con.publish("items", new String[]{"add",con.clientId,ListName, EditText.getText().toString()});//add item
                 //fetch the updated list
                 con.publish("items", new String[]{"fetch",con.clientId,ListName});
+
+                EditText.setText("");
 
             }
         });

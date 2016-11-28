@@ -17,6 +17,7 @@ import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
     Connection con;
@@ -106,7 +107,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 //Starts to subscribe;
 //                con.subscribeToTopic();
                 //Publish a request
-                con.publish("lists",new String[]{"fetch-lists",Connection.clientId});
             } else {
                 Log.d("StateTest", "false");
                 Toast.makeText(MainActivity.this, "Not connected to the broker mother father", Toast.LENGTH_LONG).show();

@@ -4,9 +4,10 @@ package com.example.johanringstrom.fragment_grocode;
  * Created by Pierre on 2016-11-18.
  */
 
-        import android.app.ProgressDialog;
-        import android.content.Intent;
-        import android.os.Bundle;
+
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -32,6 +33,9 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
+
+        conn = new Connection(SignupActivity.this);
+
         _signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,6 +54,7 @@ public class SignupActivity extends AppCompatActivity {
             }
 
             });
+
     }
 
 

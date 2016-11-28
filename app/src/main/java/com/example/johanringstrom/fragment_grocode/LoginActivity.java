@@ -44,6 +44,8 @@ public class LoginActivity extends AppCompatActivity {
 //                if(click)
 //                    _loginButton.callOnClick();
 
+
+
             }
         });
 
@@ -85,6 +87,7 @@ public class LoginActivity extends AppCompatActivity {
                 new Runnable() {
                     public void run() {
                         try {
+
                             new Thread() {
                                 public void run() {
                                     conn.subscribeToTopic();
@@ -105,6 +108,13 @@ public class LoginActivity extends AppCompatActivity {
                             conn.loggedin(_emailText.getText().toString(), _passwordText.getText().toString());
                             conn.loggedin(_emailText.getText().toString(), _passwordText.getText().toString());
                             onLoginSuccess();
+
+                            /*new Thread(){public void run(){conn.subscribeToTopic();}}.start();
+                            boolean res = conn.loggedin(_emailText.getText().toString(),_passwordText.getText().toString());
+                            if(res)
+                                onLoginSuccess();
+                            else
+                                onLoginFailed();*/
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -142,7 +152,9 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
         _loginButton.setEnabled(true);
         conn.unSubscribe();
+
         conn.sub=false;
+
     }
     public void onLoginFailedTest() {
         _loginButton.setEnabled(true);

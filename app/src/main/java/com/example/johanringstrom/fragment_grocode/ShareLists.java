@@ -57,6 +57,7 @@ public class ShareLists extends Fragment{
                 android.app.FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.content_frame, new ItemsSubList()).commit();
 //                con.publish("getSubList", list.toString(), "Test");
+
             }
         });
 
