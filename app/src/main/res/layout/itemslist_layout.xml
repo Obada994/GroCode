@@ -5,9 +5,9 @@
 
     <ListView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="275dp"
             android:id="@+id/listView" android:layout_alignParentTop="true" android:layout_alignParentStart="true"
-            android:layout_marginTop="81dp" android:layout_marginBottom="160dp"/>
+            android:layout_marginTop="81dp" android:layout_marginBottom="20dp"/>
     <EditText
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -28,8 +28,14 @@
                  android:id="@+id/btnSpeak"/>
     <ListView
             android:layout_width="wrap_content"
+            android:layout_height="250dp"
+            android:layout_marginTop="0dp"
+            android:id="@+id/listView2"
+            android:layout_below="@+id/listView" android:layout_alignEnd="@+id/Baught"/>
+    <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/listView2" android:layout_alignParentBottom="true"
-            android:layout_alignEnd="@+id/btnSpeak" android:layout_marginTop="400dp"
-    />
+            android:text="Baught"
+            android:id="@+id/Baught" android:layout_below="@+id/listView" android:layout_alignEnd="@+id/btnSpeak"/>
 </RelativeLayout>

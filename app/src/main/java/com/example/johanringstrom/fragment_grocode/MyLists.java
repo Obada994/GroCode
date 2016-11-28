@@ -69,7 +69,9 @@ public class MyLists extends Fragment{
                 android.app.FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.content_frame, new ItemsList()).commit();
                     //args[0]=request, args[1]=email, args[2]=list, args[3]=item
-                con.publish("items", new String[]{"fetch",con.clientId,list.toString()});
+                    //con.publish("boughtItems", new String[]{"fetch-bought",con.clientId,ListName.toString()});
+                    con.publish("items", new String[]{"fetch",con.clientId,list.toString()});
+
             }
         });
 

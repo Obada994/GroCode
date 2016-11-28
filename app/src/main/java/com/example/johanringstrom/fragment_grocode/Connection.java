@@ -35,7 +35,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             //Set clientId and create new create a MqttAndroid client
             //String clientId = MqttClient.generateClientId();
             this.client =
-                    new MqttAndroidClient(context, "tcp://broker.hivemq.com:1883",
+                    new MqttAndroidClient(context, "tcp://test.mosquitto.org:1883",
                             //Tryes to connect this client to a the  broker. test.mosquitto.org
                             clientId);//"tcp://192.168.43.185:1883
             try {
@@ -110,6 +110,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
         JSONObject data=new JSONObject();
         switch(type)
         {
+
             case "login":
                 //args[0]=request,args[1]=email,args[2]=password
                 try
@@ -161,6 +162,24 @@ public class Connection extends AppCompatActivity implements MqttCallback {
                     toSend.put("request",args[0]);
                     //if it's not fetch then we need this key (data)
                     if (!args[0].equals("fetch"))
+                    {
+                        data.put("item",args[3]);
+                        toSend.put("data",data);
+                    }
+                }catch(Exception e)
+                {
+                    e.printStackTrace();
+                }
+                break;
+            case "boughtItems":
+                //args[0]=request, args[1]=email, args[2]=list, args[3]=item
+                try {
+                    //{"client_id":"beroo75@gmail.com","list":"home","request":"add","data":{"item":"apple"}} or {"client_id":"beroo75@gmail.com","list":"home","request":"fetch"}
+                    toSend.put("client_id", args[1]);
+                    toSend.put("list", args[2]);
+                    toSend.put("request",args[0]);
+                    //if it's not fetch then we need this key (data)
+                    if (!args[0].equals("fetch-bought"))
                     {
                         data.put("item",args[3]);
                         toSend.put("data",data);
@@ -267,11 +286,17 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             }
         }
         // if the data are items update the items activities
-        if (currentTodo.equals("items")) {
+        if (currentTodo.equals("items") ) {
             ItemsList myItems = new ItemsList();
             myItems.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++)
                 myItems.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
+        }
+        if (currentTodo.equals("boughtItems")) {
+            ItemsList myBoughtItems = new ItemsList();
+            myBoughtItems.getListAdapterBought().clear();
+            for (int i = 0; i < itemArr.length(); i++)
+                myBoughtItems.getListAdapterBought().add((String) itemArr.getJSONObject(i).get("item"));
         }
         if (currentTodo.equals("getSubscriptionLists")) {//TODO
             ShareLists mySubLists = new ShareLists();
