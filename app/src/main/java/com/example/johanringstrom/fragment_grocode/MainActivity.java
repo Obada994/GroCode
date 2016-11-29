@@ -88,6 +88,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             MyLists ListName = new MyLists();
             con.publish("lists", new String[]{"delete-list",con.clientId,ListName.getListname()});
             Toast.makeText(getApplicationContext(),"List Deleted",Toast.LENGTH_SHORT).show();
+            android.app.FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, new MyLists()).commit();
             return true;
 
         }
