@@ -1,12 +1,18 @@
 package com.example.johanringstrom.fragment_grocode;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.*;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 
 
 /**
@@ -14,12 +20,16 @@ import org.json.JSONObject;
  */
 public class Connection extends AppCompatActivity implements MqttCallback {
 
-    MqttAndroidClient client;
+
+    static MqttAndroidClient client;
+
     static String clientId;
     private int qos = 1;
     private static String currentTodo;
     private String TAG;
     static boolean loggedin;
+    static boolean sub;
+
 
     public Connection(final Context context, String clientId){
 
@@ -64,8 +74,8 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             //Set clientId and create new create a MqttAndroid client
             //String clientId = MqttClient.generateClientId();
             this.client =
-                    new MqttAndroidClient(context, "tcp://test.mosquitto.org:1883",
-                            //Tryes to connect this client to a the  broker. test.mosquitto.org
+                    new MqttAndroidClient(context, "tcp://broker.hivemq.com:1883",
+            //Tryes to connect this client to a the  broker. test.mosquitto.org
                             clientId);//"tcp://192.168.43.185:1883
             try {
                 IMqttToken token = client.connect();
@@ -103,6 +113,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
         JSONObject data=new JSONObject();
         switch(type)
         {
+
             case "login":
                 //args[0]=request,args[1]=email,args[2]=password
                 try
@@ -139,7 +150,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
                     toSend.put("request",args[0]);
                     //if it's not fetch-lists then we need this key (list)
                     if(!args[0].equals("fetch-lists"))
-                        toSend.put("list",args[2]);
+                    toSend.put("list",args[2]);
                 }catch(Exception e)
                 {
                     e.printStackTrace();
@@ -163,6 +174,26 @@ public class Connection extends AppCompatActivity implements MqttCallback {
                     e.printStackTrace();
                 }
                 break;
+
+            case "boughtItems":
+                //args[0]=request, args[1]=email, args[2]=list, args[3]=item
+                try {
+                    //{"client_id":"beroo75@gmail.com","list":"home","request":"add","data":{"item":"apple"}} or {"client_id":"beroo75@gmail.com","list":"home","request":"fetch"}
+                    toSend.put("client_id", args[1]);
+                    toSend.put("list", args[2]);
+                    toSend.put("request",args[0]);
+                    //if it's not fetch then we need this key (data)
+                    if (!args[0].equals("fetch-bought"))
+                    {
+                        data.put("item",args[3]);
+                        toSend.put("data",data);
+                    }
+                }catch(Exception e)
+                {
+                    e.printStackTrace();
+                }
+                break;
+
             default:
 
         }
@@ -242,12 +273,16 @@ public class Connection extends AppCompatActivity implements MqttCallback {
         Log.d("currentTodo", currentTodo);
         // {"reply":"done","data":[{"item":"home"}]}
         //if the data are list names then update the list activities
-        if (currentTodo.equals("login")) {
+
+        if (currentTodo.equals("login") || currentTodo.equals("register")) {
+
             if (message.toString().equals("{\"reply\":\"done\"}")) {
                 loggedin = true;
             } else
             {
                 loggedin=false;
+               // sub=false;
+
             }
         }
         if (currentTodo.equals("lists")) {
@@ -259,11 +294,20 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             }
         }
         // if the data are items update the items activities
+
         if (currentTodo.equals("items")) {
             ItemsList myItems = new ItemsList();
             myItems.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++)
                 myItems.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
+
+        }
+        if (currentTodo.equals("boughtItems")) {
+            ItemsList myBoughtItems = new ItemsList();
+            myBoughtItems.getListAdapterBought().clear();
+            for (int i = 0; i < itemArr.length(); i++)
+                myBoughtItems.getListAdapterBought().add((String) itemArr.getJSONObject(i).get("item"));
+
         }
         if (currentTodo.equals("getSubscriptionLists")) {//TODO
             ShareLists mySubLists = new ShareLists();
@@ -284,9 +328,12 @@ public class Connection extends AppCompatActivity implements MqttCallback {
         publish("login",new String[]{"login", email,pass});
         try {
             client.publish("Gro/"+clientId,new MqttMessage(new String("loggedIn is: "+loggedin).getBytes()));
+            Thread.sleep(1000);
         } catch (MqttPersistenceException e) {
             e.printStackTrace();
         } catch (MqttException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
         return loggedin;

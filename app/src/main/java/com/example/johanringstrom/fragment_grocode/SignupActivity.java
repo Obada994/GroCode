@@ -4,6 +4,7 @@ package com.example.johanringstrom.fragment_grocode;
  * Created by Pierre on 2016-11-18.
  */
 
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,7 +33,9 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
+
         conn = new Connection(SignupActivity.this);
+
         _signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -40,6 +43,7 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
+        conn = new Connection(SignupActivity.this,"");
         _loginLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -49,7 +53,8 @@ public class SignupActivity extends AppCompatActivity {
                 startActivity(intent);
             }
 
-        });
+            });
+
     }
 
 
@@ -80,6 +85,7 @@ public class SignupActivity extends AppCompatActivity {
                     public void run() {
                         // On complete call either onSignupSuccess or onSignupFailed
                         // depending on success
+                        conn.subscribeToTopic();
                         onSignupSuccess();
                         // onSignupFailed();
                         progressDialog.dismiss();

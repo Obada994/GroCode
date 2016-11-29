@@ -39,8 +39,10 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+//                click=!click;
                 login();
-
+//                if(click)
+//                    _loginButton.callOnClick();
             }
         });
 
@@ -71,21 +73,45 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
-
+        try {
+            conn.loggedin(_emailText.getText().toString(),_passwordText.getText().toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         String email = _emailText.getText().toString();
-        //String password = _passwordText.getText().toString();
-
         conn.clientId=email;
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
                         try {
-                            new Thread(){public void run(){conn.subscribeToTopic();}}.start();
+
+                            new Thread() {
+                                public void run() {
+                                    conn.subscribeToTopic();
+                                    conn.sub=true;
+                                }
+                            }.start();
+//                            boolean res = conn.loggedin(_emailText.getText().toString(), _passwordText.getText().toString());
+//                            res = conn.loggedin(_emailText.getText().toString(), _passwordText.getText().toString());
+//                            res = conn.loggedin(_emailText.getText().toString(), _passwordText.getText().toString());
+//                            res = conn.loggedin(_emailText.getText().toString(), _passwordText.getText().toString());
+//                            if (!click) {
+//                                click=false;
+//                                if (res)
+//                                    onLoginSuccess();
+//                                else
+//                                    onLoginFailed();
+//                            }
+                            conn.loggedin(_emailText.getText().toString(), _passwordText.getText().toString());
+                            conn.loggedin(_emailText.getText().toString(), _passwordText.getText().toString());
+                            onLoginSuccess();
+
+                            /*new Thread(){public void run(){conn.subscribeToTopic();}}.start();
                             boolean res = conn.loggedin(_emailText.getText().toString(),_passwordText.getText().toString());
                             if(res)
                                 onLoginSuccess();
                             else
-                                onLoginFailed();
+                                onLoginFailed();*/
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -94,8 +120,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }, 3000);
     }
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_SIGNUP) {
@@ -125,6 +149,13 @@ public class LoginActivity extends AppCompatActivity {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
         _loginButton.setEnabled(true);
         conn.unSubscribe();
+
+        conn.sub=false;
+
+    }
+    public void onLoginFailedTest() {
+        _loginButton.setEnabled(true);
+
     }
 
     public boolean validate() {
@@ -149,4 +180,12 @@ public class LoginActivity extends AppCompatActivity {
 
         return valid;
     }
+
+    //Fixes leaked ServiceConnection
+    
+    @Override
+    public void finish() {
+        conn = null;
+    }
+
 }
