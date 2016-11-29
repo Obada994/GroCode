@@ -56,8 +56,7 @@ public class ShareLists extends Fragment{
                 list = ListView.getItemAtPosition(position);
                 android.app.FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.content_frame, new ItemsSubList()).commit();
-//                con.publish("getSubList", list.toString(), "Test");
-
+         //       con.publish("getSubList", list.toString(), "Test");
             }
         });
 

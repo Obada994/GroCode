@@ -1,3 +1,5 @@
+/build
+
 # Built application files
 *.apk
 *.ap_
@@ -38,6 +40,8 @@ captures/
 .idea/tasks.xml
 .idea/libraries
 .idea/misc.xml
+.idea/runConfigurations.xml
+.idea/modules.xml
 
 # Keystore files
 *.jks

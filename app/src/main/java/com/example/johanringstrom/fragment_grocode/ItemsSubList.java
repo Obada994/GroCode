@@ -26,7 +26,7 @@ public class ItemsSubList extends android.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         //ListName =getArguments().getString("ListName");
-        myView = inflater.inflate(R.layout.itemslist_layout, container, false);
+        myView = inflater.inflate(R.layout.items_layout, container, false);
 
         //Create connection object to get access to publish and subscribe
         con = new Connection(getActivity());
@@ -60,13 +60,8 @@ public class ItemsSubList extends android.app.Fragment {
         final Button btnAdd = (Button) myView.findViewById(R.id.add);
         btnAdd.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-//                con.publish("addToSubList", ListName, EditText.getText().toString());
-//                con.publish("getSubList", ListName);
-
                // con.publish("addToSubList", ListName, EditText.getText().toString());
                // con.publish("getSubList", ListName);
-
 
             }
         });
