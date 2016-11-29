@@ -69,7 +69,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.share_lists) {
+            Toast.makeText(getApplicationContext(),"share",Toast.LENGTH_SHORT);
+            
+            return true;
         }
+
+
 
         return super.onOptionsItemSelected(item);
     }
