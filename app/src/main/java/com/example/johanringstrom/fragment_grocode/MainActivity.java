@@ -36,7 +36,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //Creates a Connection object
         con = new Connection(MainActivity.this,Connection.clientId);
-
+        //Starts to subscribe;
+        con.subscribeToTopic("fetch-lists");
+        con.subscribeToTopic("fetch");
+        con.subscribeToTopic("fetch-bought");
+        con.subscribeToTopic("fetch-SubscriptionList");
+        con.subscribeToTopic("fetch-Notifications");
+        con.subscribeToTopic("fetch-SubItems");
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -104,8 +110,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if(con.getClient().isConnected()) {
                 Log.d("StateTest", "true");
 
-                //Starts to subscribe;
-//                con.subscribeToTopic();
                 //Publish a request
             } else {
                 Log.d("StateTest", "false");
@@ -120,11 +124,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             if(con.getClient().isConnected()) {
                 Log.d("StateTest", "true");
-
-                //Starts to subscribe;
-//                con.subscribeToTopic();
-                //Publish a request
-//                con.publish("getSubscriptionLists");
+                con.publish("lists",new String[]{"fetch-SubscriptionList",con.clientId});//get lists
             } else {
                 Log.d("StateTest", "false");
                 Toast.makeText(MainActivity.this, "Not connected to the broker mother father", Toast.LENGTH_LONG).show();
@@ -135,6 +135,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } if (id == R.id.notifications) {
             setTitle(getString(R.string.title_section3));
             fragmentManager.beginTransaction().replace(R.id.content_frame, new ThirdFragmant()).commit();
+
+            if(con.getClient().isConnected()) {
+                Log.d("StateTest", "true");
+                con.publish("lists",new String[]{"fetch-Notifications",con.clientId});//get lists
+            } else {
+                Log.d("StateTest", "false");
+                Toast.makeText(MainActivity.this, "Not connected to the broker mother father", Toast.LENGTH_LONG).show();
+
+            };
 
             // close connection of user
         } else if (id == R.id.logout) {
