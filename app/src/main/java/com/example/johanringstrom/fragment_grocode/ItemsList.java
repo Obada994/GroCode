@@ -77,11 +77,11 @@ public class ItemsList extends Fragment{
 
         //Create a adapter to listview
         GroList = new ArrayList<>();
-        listAdapter = new ArrayAdapter<>(getActivity(), R.layout.checkitemrow, GroList);
+        listAdapter = new ArrayAdapter<>(getActivity(), R.layout.simplerow, GroList);
         ListView.setAdapter(listAdapter);
 
         GroList2 = new ArrayList<>();
-        listAdapterBought = new ArrayAdapter<>(getActivity(), R.layout.checkitemrow, GroList2);
+        listAdapterBought = new ArrayAdapter<>(getActivity(), R.layout.simplerow, GroList2);
         ListView2.setAdapter(listAdapterBought);
 
 
@@ -90,10 +90,11 @@ public class ItemsList extends Fragment{
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                    TextView text = (TextView) view;
-                    text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                Object item = ListView.getItemAtPosition(position);
+                    //text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 //args[0]=request, args[1]=email, args[2]=list, args[3]=item
-                con.publish("items", new String[]{"setToBought",con.clientId,ListName, text.getText().toString()});
+                con.publish("items", new String[]{"setToBought",con.clientId,ListName, item.toString()});
+                con.publish("items", new String[]{"fetch-bought",con.clientId,ListName});
                 con.publish("items", new String[]{"fetch",con.clientId,ListName});
             }
         });
@@ -103,11 +104,11 @@ public class ItemsList extends Fragment{
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 item = ListView2.getItemAtPosition(position);
-                TextView text = (TextView) view;
-                text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                /*TextView text = (TextView) view;
+                text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);*/
                 //args[0]=request, args[1]=email, args[2]=list, args[3]=item
                 con.publish("items", new String[]{"delete",con.clientId,ListName,item.toString() });
-                con.publish("boughtItems", new String[]{"fetch-bought",con.clientId,ListName.toString()});
+                con.publish("items", new String[]{"fetch-bought",con.clientId,ListName.toString()});
             }
         });
 
@@ -125,14 +126,14 @@ public class ItemsList extends Fragment{
             }
         });
 
-        final Button baught = (Button) myView.findViewById(R.id.Baught);
-        baught.setOnClickListener(new View.OnClickListener() {
+        /*final Button bought = (Button) myView.findViewById(R.id.Baught);
+        bought.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //args[0]=request, args[1]=email, args[2]=list, args[3]=item
-                con.publish("boughtItems", new String[]{"fetch-bought",con.clientId,ListName.toString()});
+               // con.publish("boughtItems", new String[]{"fetch-bought",con.clientId,ListName.toString()});
 
             }
-        });
+        });*/
 
 
         btnSpeak.setOnClickListener(new View.OnClickListener() {
