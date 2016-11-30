@@ -20,13 +20,19 @@ import butterknife.ButterKnife;
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
+    Connection conn;
+    boolean click;
+
+    /*
+     * Bind a field to the view for the specified ID.
+     * The view will automatically be cast to the field type.
+     */
 
     @BindView(R.id.input_email) EditText _emailText;
     @BindView(R.id.input_password) EditText _passwordText;
     @BindView(R.id.btn_login) Button _loginButton;
     @BindView(R.id.link_signup) TextView _signupLink;
-    Connection conn;
-    boolean click;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
