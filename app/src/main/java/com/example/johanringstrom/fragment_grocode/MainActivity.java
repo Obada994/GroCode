@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //Choose starting fragment.
         android.app.FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, new MyLists()).commit();
+        setTitle(getString(R.string.title_section1));
+
 
         //Set toolbar(actionbar)
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

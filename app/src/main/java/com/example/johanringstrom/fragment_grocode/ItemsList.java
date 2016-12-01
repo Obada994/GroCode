@@ -44,22 +44,41 @@ public class ItemsList extends Fragment{
         //Create connection object to get access to publish and subscribe
         con = new Connection(getActivity());
         btnSpeak = (ImageButton) myView.findViewById(R.id.btnSpeak);
-        editText = (EditText) myView.findViewById(R.id.editText);
         EditText = (EditText) myView.findViewById(R.id.editText);
-       /* EditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-*/
-        EditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    //args[0]=request, args[1]=email, args[2]=list, args[3]=item
-                    con.publish("items", new String[]{"add",con.clientId,ListName, EditText.getText().toString()});
-                    con.publish("items", new String[]{"fetch",con.clientId,ListName});
-                    EditText.setText("");
-                }
-                return true;
-            }
-        });
+
+        
+
+        EditText.setOnEditorActionListener(
+                new EditText.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        // Identifier of the action. This will be either the identifier you supplied,
+                        // or EditorInfo.IME_NULL if being called due to the enter key being pressed.
+                        if (actionId == EditorInfo.IME_ACTION_SEARCH
+                                || actionId == EditorInfo.IME_ACTION_DONE
+                                || event.getAction() == KeyEvent.ACTION_DOWN
+                                && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                            con.publish("items", new String[]{"add",con.clientId,ListName, EditText.getText().toString()});
+                            con.publish("items", new String[]{"fetch",con.clientId,ListName});
+                            EditText.setText("");
+                            return true;
+                        }
+                        // Return true if you have consumed the action, else false.
+                        return false;
+                    }
+                });
+
+//            EditText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+//            @Override
+//            public boolean onEditorAction(EditText t, int actionId, KeyEvent event) {
+//                if (actionId == EditorInfo.IME_ACTION_DONE) {
+//                    con.publish("items", new String[]{"add",con.clientId,ListName, EditText.getText().toString()});
+//                    con.publish("items", new String[]{"fetch",con.clientId,ListName});
+//                    EditText.setText("");
+//                }
+//                return true;
+//            }
+//        });
 
         //Create myList object to get accsess to its methods
         MyLists myItems = new MyLists();
@@ -95,6 +114,8 @@ public class ItemsList extends Fragment{
                 con.publish("items", new String[]{"setToBought",con.clientId,ListName, item.toString()});
                 con.publish("items", new String[]{"fetch-bought",con.clientId,ListName});
                 con.publish("items", new String[]{"fetch",con.clientId,ListName});
+                Toast.makeText(getActivity(),
+                        item.toString()+" bought", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -108,6 +129,8 @@ public class ItemsList extends Fragment{
                 //args[0]=request, args[1]=email, args[2]=list, args[3]=item
                 con.publish("items", new String[]{"delete",con.clientId,ListName,item.toString() });
                 con.publish("items", new String[]{"fetch-bought",con.clientId,ListName.toString()});
+                Toast.makeText(getActivity(),
+                        item.toString()+" deleted", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -121,6 +144,7 @@ public class ItemsList extends Fragment{
                 con.publish("items", new String[]{"fetch",con.clientId,ListName});
 
                 EditText.setText("");
+
 
             }
         });
