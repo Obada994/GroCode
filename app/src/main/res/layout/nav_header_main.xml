@@ -37,8 +37,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="BigDick NIMZ"
-            android:id="@+id/textView2"
+            android:text=""
+            android:id="@+id/navClientId"
             android:layout_gravity="center"/>
 
 </LinearLayout>

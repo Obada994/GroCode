@@ -12,15 +12,17 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
-import org.eclipse.paho.android.service.MqttAndroidClient;
-import org.eclipse.paho.client.mqttv3.MqttException;
 
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
     Connection con;
+    static String clientId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,8 +54,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View header=navigationView.getHeaderView(0);
+        TextView name = (TextView) header.findViewById(R.id.navClientId);
+        name.setText(con.clientId);
 
-        if(!con.loggedin)
+        if(!Connection.loggedin)
         {
             Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
             startActivity(intent);
@@ -79,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -88,6 +94,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+
+        if (id == R.id.action_delete) {
+            MyLists ListName = new MyLists();
+            con.publish("lists", new String[]{"delete-list",con.clientId,ListName.getListname()});
+            Toast.makeText(getApplicationContext(),"List Deleted",Toast.LENGTH_SHORT).show();
+            android.app.FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, new MyLists()).commit();
+            return true;
+
+        }
+
+        if (id == R.id.action_share) {
             return true;
         }
 
@@ -115,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Log.d("StateTest", "false");
                 Toast.makeText(MainActivity.this, "Not connected to the broker mother father", Toast.LENGTH_LONG).show();
 
-            };
+            }
 
 
         } if (id == R.id.share_lists) {
@@ -129,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Log.d("StateTest", "false");
                 Toast.makeText(MainActivity.this, "Not connected to the broker mother father", Toast.LENGTH_LONG).show();
 
-            };
+            }
 
 
         } if (id == R.id.notifications) {
