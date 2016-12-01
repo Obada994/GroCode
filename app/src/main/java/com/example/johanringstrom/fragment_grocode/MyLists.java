@@ -89,14 +89,11 @@ public class MyLists extends Fragment{
         // hide the action bar
 
         btnSpeak.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 promptSpeechInput();
             }
         });
-
-
         return myView;
     }
     //Gets listadapter
@@ -107,7 +104,6 @@ public class MyLists extends Fragment{
     //Get listname
     public String getListname(){
         return this.list.toString();
-
     }
 
 
@@ -140,7 +136,6 @@ public class MyLists extends Fragment{
         switch (requestCode) {
             case REQ_CODE_SPEECH_INPUT: {
                 if (resultCode == RESULT_OK && null != data) {
-
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     editText.setText(result.get(0));
