@@ -1,6 +1,7 @@
 package com.example.johanringstrom.fragment_grocode;
 
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -13,6 +14,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -110,7 +113,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if (id == R.id.action_share) {
+            /*LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            PopupWindow pw = new PopupWindow(inflater.inflate(R.layout.share_popup, null, true),300,350, true);
+            pw.showAtLocation(this.findViewById(R.id.content_frame), Gravity.CENTER, 0, 0);*/
+            final Dialog dialog = new Dialog(this,R.style.AppTheme_Dark_Dialog);
+            dialog.setContentView(R.layout.share_dialog);
+            dialog.setTitle("Custom Alert Dialog");
+
+            final EditText editText = (EditText) dialog.findViewById(R.id.editText);
+            Button btnSave          = (Button) dialog.findViewById(R.id.save);
+            Button btnCancel        = (Button) dialog.findViewById(R.id.cancel);
+            dialog.show();
             return true;
+
         }
 
         return super.onOptionsItemSelected(item);
