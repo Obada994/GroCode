@@ -64,6 +64,8 @@ public class ItemsList extends Fragment{
         //Create myList object to get accsess to its methods
         MyLists myItems = new MyLists();
         ListName = myItems.getListname();
+        getActivity().setTitle(myItems.getListname());
+
 
         //List view to display list
         final ExpandableHeightListView mListView = (ExpandableHeightListView) myView.findViewById(R.id.listView);
@@ -81,7 +83,6 @@ public class ItemsList extends Fragment{
         mListAdapterBought = new ArrayAdapter<>(getActivity(),R.layout.simplerow, GroList2);
         mListView2.setAdapter(mListAdapterBought);
         mListView2.setExpanded(true);
-
 
 
         //Set what to do when a list item is clicked
@@ -199,4 +200,6 @@ public class ItemsList extends Fragment{
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
         inflater.inflate(R.menu.list, menu);
     }
+
+
 }
