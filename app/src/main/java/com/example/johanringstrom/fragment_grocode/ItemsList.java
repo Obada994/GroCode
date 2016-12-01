@@ -3,12 +3,13 @@ package com.example.johanringstrom.fragment_grocode;
 import android.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
 import android.view.*;
+import android.view.inputmethod.EditorInfo;
 import android.widget.*;
+import com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -20,10 +21,9 @@ import static android.app.Activity.RESULT_OK;
  */
 public class ItemsList extends Fragment{
     View myView;
-    private ListView ListView ;
-    private ListView ListView2 ;
-    private static  ArrayAdapter<String> listAdapter ;
-    private static  ArrayAdapter<String> listAdapterBought ;
+    private ExpandableHeightListView mListView, mListView2;
+    private static  ArrayAdapter<String> mListAdapter ;
+    private static  ArrayAdapter<String> mListAdapterBought ;
     private ArrayList<String> GroList;
     private ArrayList<String> GroList2;
     private EditText EditText;
@@ -47,8 +47,7 @@ public class ItemsList extends Fragment{
         editText = (EditText) myView.findViewById(R.id.editText);
         EditText = (EditText) myView.findViewById(R.id.editText);
        /* EditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-
-        EditText = (EditText) myView.findViewById(R.id.editText);
+*/
         EditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -60,35 +59,38 @@ public class ItemsList extends Fragment{
                 }
                 return true;
             }
-        });*/
+        });
 
         //Create myList object to get accsess to its methods
         MyLists myItems = new MyLists();
         ListName = myItems.getListname();
 
-
         //List view to display list
-        ListView = (ListView) myView.findViewById(R.id.listView);
-        ListView2 = (ListView) myView.findViewById(R.id.listView2);
-
+        final ExpandableHeightListView mListView = (ExpandableHeightListView) myView.findViewById(R.id.listView);
+        final ExpandableHeightListView mListView2 = (ExpandableHeightListView) myView.findViewById(R.id.listView2);
+        //mListView = (ListView) myView.findViewById(R.id.listView);
+        //mListView2 = (ListView) myView.findViewById(R.id.listView2);
 
         //Create a adapter to listview
         GroList = new ArrayList<>();
-        listAdapter = new ArrayAdapter<>(getActivity(), R.layout.simplerow, GroList);
-        ListView.setAdapter(listAdapter);
+        mListAdapter = new ArrayAdapter<>(getActivity(),R.layout.simplerow,GroList);
+        mListView.setAdapter(mListAdapter);
+        mListView.setExpanded(true);
 
         GroList2 = new ArrayList<>();
-        listAdapterBought = new ArrayAdapter<>(getActivity(), R.layout.simplerow, GroList2);
-        ListView2.setAdapter(listAdapterBought);
+        mListAdapterBought = new ArrayAdapter<>(getActivity(),R.layout.simplerow, GroList2);
+        mListView2.setAdapter(mListAdapterBought);
+        mListView2.setExpanded(true);
+
 
 
         //Set what to do when a list item is clicked
-        ListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                Object item = ListView.getItemAtPosition(position);
-                    //text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                Object item = mListView.getItemAtPosition(position);
+                //text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 //args[0]=request, args[1]=email, args[2]=list, args[3]=item
                 con.publish("items", new String[]{"setToBought",con.clientId,ListName, item.toString()});
                 con.publish("items", new String[]{"fetch-bought",con.clientId,ListName});
@@ -96,11 +98,11 @@ public class ItemsList extends Fragment{
             }
         });
 
-        ListView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                item = ListView2.getItemAtPosition(position);
+                item = mListView2.getItemAtPosition(position);
                 /*TextView text = (TextView) view;
                 text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);*/
                 //args[0]=request, args[1]=email, args[2]=list, args[3]=item
@@ -147,10 +149,10 @@ public class ItemsList extends Fragment{
     }
     //Gets listadapter
     public ArrayAdapter<String> getListAdapter(){
-        return this.listAdapter;
+        return this.mListAdapter;
     }
     public ArrayAdapter<String> getListAdapterBought(){
-        return this.listAdapterBought;
+        return this.mListAdapterBought;
     }
 
 
