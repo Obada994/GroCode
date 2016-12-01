@@ -71,6 +71,7 @@ public class MyLists extends Fragment{
                     //args[0]=request, args[1]=email, args[2]=list, args[3]=item
                     //con.publish("boughtItems", new String[]{"fetch-bought",con.clientId,ListName.toString()});
                     con.publish("items", new String[]{"fetch",con.clientId,list.toString()});
+                    con.publish("items", new String[]{"fetch-bought",con.clientId,list.toString()});
             }
         });
 
@@ -88,14 +89,11 @@ public class MyLists extends Fragment{
         // hide the action bar
 
         btnSpeak.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 promptSpeechInput();
             }
         });
-
-
         return myView;
     }
     //Gets listadapter
@@ -106,7 +104,6 @@ public class MyLists extends Fragment{
     //Get listname
     public String getListname(){
         return this.list.toString();
-
     }
 
 
@@ -139,7 +136,6 @@ public class MyLists extends Fragment{
         switch (requestCode) {
             case REQ_CODE_SPEECH_INPUT: {
                 if (resultCode == RESULT_OK && null != data) {
-
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     editText.setText(result.get(0));
