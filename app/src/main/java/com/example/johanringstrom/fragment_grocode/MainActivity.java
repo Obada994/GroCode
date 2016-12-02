@@ -89,7 +89,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -114,20 +113,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.action_share) {
 
-            MyLists ListName = new MyLists();
-            con.publish("items", new String[]{"invite",con.clientId,ListName.getListname() , "nima@gmail.com"});
-
-            /*LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            PopupWindow pw = new PopupWindow(inflater.inflate(R.layout.share_popup, null, true),300,350, true);
-            pw.showAtLocation(this.findViewById(R.id.content_frame), Gravity.CENTER, 0, 0);*/
             final Dialog dialog = new Dialog(this,R.style.AppTheme_Dark_Dialog);
             dialog.setContentView(R.layout.share_dialog);
             dialog.setTitle("Custom Alert Dialog");
 
             final EditText editText = (EditText) dialog.findViewById(R.id.editText);
-            Button btnSave          = (Button) dialog.findViewById(R.id.save);
-            Button btnCancel        = (Button) dialog.findViewById(R.id.cancel);
+            Button btnShare = (Button) dialog.findViewById(R.id.share);
+            Button btnCancel = (Button) dialog.findViewById(R.id.cancel);
+
             dialog.show();
+
+            btnShare.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    MyLists ListName = new MyLists();
+                    con.publish("items", new String[]{"invite",con.clientId,ListName.getListname() , editText.getText().toString()});
+                    Toast.makeText(getApplicationContext(),"List Shared",Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                }
+            });
+
+            btnCancel.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
             return true;
 
         }
