@@ -56,7 +56,8 @@ public class ThirdFragmant extends Fragment{
                                     int position, long id) {
                 list = ListView.getItemAtPosition(position);
                 android.app.FragmentManager fragmentManager = getFragmentManager();
-                con.publish("items", new String[]{"confirmShare",con.clientId,list.toString()});
+                //con.publish("items", new String[]{"confirmShare",con.clientId,list.toString()});
+                con.publish("items", new String[]{"reject-invite",con.clientId,list.toString()});
 
             }
         });
