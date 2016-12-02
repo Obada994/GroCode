@@ -119,9 +119,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             dialog.setTitle("Custom Alert Dialog");
 
             final EditText editText = (EditText) dialog.findViewById(R.id.editText);
-            Button btnSave          = (Button) dialog.findViewById(R.id.save);
+            Button btnShare          = (Button) dialog.findViewById(R.id.share);
             Button btnCancel        = (Button) dialog.findViewById(R.id.cancel);
             dialog.show();
+
+
             return true;
 
         }
