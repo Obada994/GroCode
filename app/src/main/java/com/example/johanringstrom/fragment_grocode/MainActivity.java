@@ -108,6 +108,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if (id == R.id.action_share) {
+            MyLists ListName = new MyLists();
+            con.publish("items", new String[]{"invite",con.clientId,ListName.getListname() , "nima@gmail.com"});
             return true;
         }
 

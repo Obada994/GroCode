@@ -165,7 +165,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
                     toSend.put("request",args[0]);
                     Log.d("??args0>>>", args[0]);
                     //if it's not fetch then we need this key (data)
-                    if (!(args[0].equals("fetch") || args[0].equals("fetch-bought")|| args[0].equals("fetch-bought")|| args[0].equals("fetch-SubItems")) )
+                    if (!(args[0].equals("fetch") || args[0].equals("fetch-bought")|| args[0].equals("fetch-bought")|| args[0].equals("fetch-SubItems")|| args[0].equals("reject-invite")) )
                     {
                         Log.d("??args0>>>", args[0]);
                         data.put("item",args[3]);
