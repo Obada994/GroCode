@@ -87,11 +87,12 @@ public class ItemsSubList extends android.app.Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                TextView text = (TextView) view;
-                text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                item = ListView.getItemAtPosition(position);
+               /* TextView text = (TextView) view;
+                text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);*/
                 //args[0]=request, args[1]=email, args[2]=list, args[3]=item
-                con.publish("items", new String[]{"setToBought",con.clientId,ListName, text.getText().toString()});
-                con.publish("items", new String[]{"fetch",con.clientId,ListName});
+                con.publish("items", new String[]{"delete-SubItem",con.clientId,ListName, item.toString()});
+                con.publish("items", new String[]{"fetch-SubItems",con.clientId,ListName});
             }
         });
 
@@ -103,8 +104,8 @@ public class ItemsSubList extends android.app.Fragment {
                 TextView text = (TextView) view;
                 text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 //args[0]=request, args[1]=email, args[2]=list, args[3]=item
-               /* con.publish("items", new String[]{"delete",con.clientId,ListName,item.toString() });
-                con.publish("boughtItems", new String[]{"fetch-bought",con.clientId,ListName.toString()});*/
+                //con.publish("items", new String[]{"delete-SubItem",con.clientId,ListName,item.toString() });
+                //con.publish("items", new String[]{"fetch-SubItems",con.clientId,ListName});
             }
         });
 
@@ -115,6 +116,7 @@ public class ItemsSubList extends android.app.Fragment {
                 //args[0]=request, args[1]=email, args[2]=list, args[3]=item
                 con.publish("items", new String[]{"add-subItem",con.clientId,ListName, EditText.getText().toString()});//add item
                 //fetch the updated list
+                con.publish("items", new String[]{"fetch-SubItems",con.clientId,ListName});
 
 
                 EditText.setText("");
