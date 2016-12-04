@@ -21,7 +21,6 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
     Connection conn;
-    boolean click;
 
     /*
      * Bind a field to the view for the specified ID.
@@ -39,16 +38,13 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-
+        //init the connection here with an empty client id
         conn = new Connection(LoginActivity.this,"");
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-//                click=!click;
                 login();
-//                if(click)
-//                    _loginButton.callOnClick();
             }
         });
 
@@ -85,6 +81,7 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         String email = _emailText.getText().toString();
+        //set the client ID to the provided email
         conn.clientId=email;
         new android.os.Handler().postDelayed(
                 new Runnable() {
@@ -93,35 +90,18 @@ public class LoginActivity extends AppCompatActivity {
 
                             new Thread() {
                                 public void run() {
+                                    //subscribe to topic Gro/email
                                     conn.subscribeToTopic();
-                                    conn.sub=true;
                                 }
                             }.start();
-//                            boolean res = conn.loggedin(_emailText.getText().toString(), _passwordText.getText().toString());
-//                            res = conn.loggedin(_emailText.getText().toString(), _passwordText.getText().toString());
-//                            res = conn.loggedin(_emailText.getText().toString(), _passwordText.getText().toString());
-//                            res = conn.loggedin(_emailText.getText().toString(), _passwordText.getText().toString());
-//                            if (!click) {
-//                                click=false;
-//                                if (res)
-//                                    onLoginSuccess();
-//                                else
-//                                    onLoginFailed();
-//                            }
+                            //send a login request
                             conn.loggedin(_emailText.getText().toString(), _passwordText.getText().toString());
                             conn.loggedin(_emailText.getText().toString(), _passwordText.getText().toString());
+                            //move on to the main activity, we'll check of the failure/success of the login there then we'll either stay or get back here
                             onLoginSuccess();
-
-                            /*new Thread(){public void run(){conn.subscribeToTopic();}}.start();
-                            boolean res = conn.loggedin(_emailText.getText().toString(),_passwordText.getText().toString());
-                            if(res)
-                                onLoginSuccess();
-                            else
-                                onLoginFailed();*/
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        // onLoginFailed();
                         progressDialog.dismiss();
                     }
                 }, 3000);
@@ -154,16 +134,10 @@ public class LoginActivity extends AppCompatActivity {
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
         _loginButton.setEnabled(true);
+        //unsubscribe from the topic if login fails
         conn.unSubscribe();
 
-        conn.sub=false;
-
     }
-    public void onLoginFailedTest() {
-        _loginButton.setEnabled(true);
-
-    }
-
     public boolean validate() {
         boolean valid = true;
 
@@ -186,9 +160,7 @@ public class LoginActivity extends AppCompatActivity {
 
         return valid;
     }
-
     //Fixes leaked ServiceConnection
-    
     @Override
     public void finish() {
         conn = null;

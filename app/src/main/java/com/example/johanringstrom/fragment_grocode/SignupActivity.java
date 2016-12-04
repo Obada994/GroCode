@@ -34,7 +34,8 @@ public class SignupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
 
-        conn = new Connection(SignupActivity.this);
+        conn = new Connection(SignupActivity.this,"");
+        conn.unSubscribe();
 
         _signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,7 +44,6 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
-        conn = new Connection(SignupActivity.this,"");
         _loginLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,6 +51,7 @@ public class SignupActivity extends AppCompatActivity {
                 //Toast.makeText(MainActivity.this, "Logout Successful", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                 startActivity(intent);
+                finish();
             }
 
             });
@@ -80,6 +81,13 @@ public class SignupActivity extends AppCompatActivity {
         conn.clientId=email;
         //args[0]=request,args[1]=email,args[2]=password,args[3]=name
         conn.publish("register",new String[]{"register",email,password,name});
+        try {
+            Thread.sleep(1000);
+            conn.loggedin(email,password);
+            conn.loggedin(email,password);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
@@ -97,6 +105,8 @@ public class SignupActivity extends AppCompatActivity {
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
+        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+        startActivity(intent);
         finish();
     }
 

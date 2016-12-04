@@ -24,7 +24,6 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
     Connection con;
-    static String clientId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +42,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //Creates a Connection object
         con = new Connection(MainActivity.this,Connection.clientId);
-        //Starts to subscribe;
-        con.subscribeToTopic("fetch-lists");
-        con.subscribeToTopic("fetch");
-        con.subscribeToTopic("fetch-bought");
-        con.subscribeToTopic("fetch-SubscriptionList");
-        con.subscribeToTopic("fetch-Notifications");
-        con.subscribeToTopic("fetch-SubItems");
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -65,9 +57,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if(!Connection.loggedin)
         {
+            con.unSubscribe();
             Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
             startActivity(intent);
+            finish();
         }
+        //Starts to subscribe after we check that login succeeded
+        con.subscribeToTopic("fetch-lists");
+        con.subscribeToTopic("fetch");
+        con.subscribeToTopic("fetch-bought");
+        con.subscribeToTopic("fetch-SubscriptionList");
+        con.subscribeToTopic("fetch-Notifications");
+        con.subscribeToTopic("fetch-SubItems");
     }
 
 
