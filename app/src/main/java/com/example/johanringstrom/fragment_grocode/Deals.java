@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -29,15 +30,13 @@ public class Deals extends Fragment {
     private Button b;
     private TextView t;
     private LocationManager locationManager;
-    private LocationListener listener;;
+    private LocationListener listener;
+    private double getLongitude, getLatitude;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.activity_deals, container, false);
-
-
-
-
 
         return view;
     }
@@ -85,7 +84,9 @@ public class Deals extends Fragment {
         listener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                t.setText("\n " + location.getLongitude() + " " + location.getLatitude());
+                getLongitude = location.getLongitude();
+                getLatitude = location.getLatitude();
+                Toast.makeText(getActivity(), "Location found", Toast.LENGTH_SHORT).show();
             }
 
             @Override
