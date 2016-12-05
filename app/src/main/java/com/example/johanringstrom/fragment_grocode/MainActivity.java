@@ -14,15 +14,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
     Connection con;
+    private ListView ListView ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,8 +141,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if (id == R.id.action_unsub) {
-
-            //con.publish("items", new String[]{"reject-invite",con.clientId,list.toString()});
+            ShareLists sl = new ShareLists();
+            con.publish("items", new String[]{"reject-invite",con.clientId, sl.getListname() });
+            Toast.makeText(getApplicationContext(),"Unsubscribed to list",Toast.LENGTH_SHORT).show();
+            android.app.FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, new ShareLists()).commit();
             return true;
         }
 
