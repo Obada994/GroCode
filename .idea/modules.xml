@@ -3,11 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/GroCode.iml" filepath="$PROJECT_DIR$/GroCode.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/GroCode.iml" filepath="$PROJECT_DIR$/.idea/modules/GroCode.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Project android app.iml" filepath="$PROJECT_DIR$/.idea/modules/Project android app.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sourceTree.iml" filepath="$PROJECT_DIR$/.idea/modules/sourceTree.iml" />
     </modules>
   </component>
 </project>

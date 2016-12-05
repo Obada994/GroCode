@@ -42,7 +42,9 @@ public class ItemsSubList extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         //ListName =getArguments().getString("ListName");
         myView = inflater.inflate(R.layout.itemslist_layout, container, false);
-        //setHasOptionsMenu(true);
+
+        setHasOptionsMenu(true);
+
 
         //Create connection object to get access to publish and subscribe
         con = new Connection(getActivity());
@@ -218,5 +220,12 @@ public class ItemsSubList extends Fragment {
             }
 
         }
+
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        inflater.inflate(R.menu.unsublist, menu);
+    }
+
 }

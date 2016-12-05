@@ -28,8 +28,6 @@ public class Connection extends AppCompatActivity implements MqttCallback {
     private static String currentTodo;
     private String TAG;
     static boolean loggedin;
-    static boolean sub;
-
 
     public Connection(final Context context, String clientId){
 

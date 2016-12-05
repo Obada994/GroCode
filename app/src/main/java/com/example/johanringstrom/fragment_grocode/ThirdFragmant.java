@@ -1,13 +1,14 @@
 package com.example.johanringstrom.fragment_grocode;
 
 import android.app.Fragment;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class ThirdFragmant extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.sharelist_layout, container, false);
+        setHasOptionsMenu(true);
 
 
         //Creat connection object to get accsess to publish and subscribe

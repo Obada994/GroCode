@@ -20,11 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
     Connection con;
-    static String clientId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,15 +41,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //Creates a Connection object
         con = new Connection(MainActivity.this,Connection.clientId);
-        //Starts to subscribe;
-        con.subscribeToTopic("fetch-lists");
-        con.subscribeToTopic("fetch");
-        con.subscribeToTopic("fetch-bought");
-        con.subscribeToTopic("fetch-SubscriptionList");
-        con.subscribeToTopic("fetch-Notifications");
-        con.subscribeToTopic("fetch-SubItems");
-        con.subscribeToTopic("fetch-BoughtSubItem");
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -67,9 +56,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if(!Connection.loggedin)
         {
+            con.unSubscribe();
             Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
             startActivity(intent);
+            finish();
         }
+        //Starts to subscribe after we check that login succeeded
+        con.subscribeToTopic("fetch-lists");
+        con.subscribeToTopic("fetch");
+        con.subscribeToTopic("fetch-bought");
+        con.subscribeToTopic("fetch-SubscriptionList");
+        con.subscribeToTopic("fetch-Notifications");
+        con.subscribeToTopic("fetch-SubItems");
     }
 
 
@@ -90,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -116,22 +113,47 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.action_share) {
 
+
             MyLists ListName = new MyLists();
 
 
             /*LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             PopupWindow pw = new PopupWindow(inflater.inflate(R.layout.share_popup, null, true),300,350, true);
             pw.showAtLocation(this.findViewById(R.id.content_frame), Gravity.CENTER, 0, 0);*/
+
             final Dialog dialog = new Dialog(this,R.style.AppTheme_Dark_Dialog);
             dialog.setContentView(R.layout.share_dialog);
             dialog.setTitle("Custom Alert Dialog");
 
             final EditText editText = (EditText) dialog.findViewById(R.id.editText);
-            Button btnSave          = (Button) dialog.findViewById(R.id.save);
-            Button btnCancel        = (Button) dialog.findViewById(R.id.cancel);
+            Button btnShare = (Button) dialog.findViewById(R.id.share);
+            Button btnCancel = (Button) dialog.findViewById(R.id.cancel);
+
             dialog.show();
+
+            btnShare.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    MyLists ListName = new MyLists();
+                    con.publish("items", new String[]{"invite",con.clientId,ListName.getListname() , editText.getText().toString()});
+                    Toast.makeText(getApplicationContext(),"List Shared",Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                }
+            });
+
+            btnCancel.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
             return true;
 
+        }
+
+        if (id == R.id.action_unsub) {
+
+            //con.publish("items", new String[]{"reject-invite",con.clientId,list.toString()});
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

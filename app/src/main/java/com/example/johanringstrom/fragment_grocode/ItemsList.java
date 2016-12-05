@@ -52,8 +52,8 @@ public class ItemsList extends Fragment{
                 new EditText.OnEditorActionListener() {
                     @Override
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                        // Identifier of the action. This will be either the identifier you supplied,
-                        // or EditorInfo.IME_NULL if being called due to the enter key being pressed.
+                        // Identifier of the action. Handles what happens when you click enter on keyboard and
+                        // enter on soft keyboard on phones, emulator.
                         if (actionId == EditorInfo.IME_ACTION_SEARCH
                                 || actionId == EditorInfo.IME_ACTION_DONE
                                 || event.getAction() == KeyEvent.ACTION_DOWN
@@ -67,18 +67,7 @@ public class ItemsList extends Fragment{
                         return false;
                     }
                 });
-
-//            EditText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
-//            @Override
-//            public boolean onEditorAction(EditText t, int actionId, KeyEvent event) {
-//                if (actionId == EditorInfo.IME_ACTION_DONE) {
-//                    con.publish("items", new String[]{"add",con.clientId,ListName, EditText.getText().toString()});
-//                    con.publish("items", new String[]{"fetch",con.clientId,ListName});
-//                    EditText.setText("");
-//                }
-//                return true;
-//            }
-//        });
+        
 
         //Create myList object to get accsess to its methods
         MyLists myItems = new MyLists();
