@@ -201,7 +201,7 @@ public class ItemsList extends Fragment{
 
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    editText.setText(result.get(0));
+                    EditText.setText(result.get(0));
                 }
                 break;
             }
