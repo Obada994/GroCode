@@ -6,6 +6,7 @@
     <EditText
             android:id="@+id/editText"
             android:hint="Enter email"
+            android:inputType="textEmailAddress"
             android:layout_width="300dp"
             android:layout_height="50dp" >
 

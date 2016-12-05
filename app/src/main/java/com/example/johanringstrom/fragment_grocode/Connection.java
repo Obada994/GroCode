@@ -1,18 +1,12 @@
 package com.example.johanringstrom.fragment_grocode;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.*;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 
 
 /**
@@ -393,7 +387,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
                 mySubLists.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
         }
         if (topic.equals("Gro/"+clientId+"/fetch-Notifications")) {//TODO
-            ThirdFragmant myNotifications = new ThirdFragmant();
+            Notifications myNotifications = new Notifications();
             myNotifications.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++)
                 myNotifications.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));

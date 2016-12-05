@@ -1,14 +1,13 @@
 package com.example.johanringstrom.fragment_grocode;
 
+import android.app.Dialog;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.*;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ import java.util.ArrayList;
 /**
  * Created by johanringstrom on 10/11/16.
  */
-public class ThirdFragmant extends Fragment{
+public class Notifications extends Fragment{
 
 
     View myView;
@@ -48,7 +47,6 @@ public class ThirdFragmant extends Fragment{
         ListView.setAdapter( listAdapter );
 
 
-
         //Set what to do when a list item is clicked
         ListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
@@ -56,13 +54,39 @@ public class ThirdFragmant extends Fragment{
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
+
+                final Dialog dialog = new Dialog(getActivity(),R.style.AppTheme_Dark_Dialog);
+                dialog.setContentView(R.layout.notification_dialog);
+                dialog.setTitle("Notification Dialog");
                 list = ListView.getItemAtPosition(position);
                 android.app.FragmentManager fragmentManager = getFragmentManager();
-                //con.publish("items", new String[]{"confirmShare",con.clientId,list.toString()});
-                con.publish("items", new String[]{"reject-invite",con.clientId,list.toString()});
+
+                Button btnAccept = (Button) dialog.findViewById(R.id.Accept);
+                Button btnReject = (Button) dialog.findViewById(R.id.Decline);
+
+                dialog.show();
+
+
+                btnAccept.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        con.publish("items", new String[]{"confirmShare",con.clientId,list.toString()});
+                        Toast.makeText(getActivity(),"List Accepted",Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    }
+                });
+
+                btnReject.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        con.publish("items", new String[]{"reject-invite",con.clientId,list.toString()});
+                        Toast.makeText(getActivity(),"List Declined",Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    }
+                });
 
             }
         });
+
+
 
 
         return myView;

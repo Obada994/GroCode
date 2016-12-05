@@ -94,6 +94,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        final MyLists ListName = new MyLists();
+
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
@@ -101,7 +103,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if (id == R.id.action_delete) {
-            MyLists ListName = new MyLists();
             con.publish("lists", new String[]{"delete-list",con.clientId,ListName.getListname()});
             Toast.makeText(getApplicationContext(),"List Deleted",Toast.LENGTH_SHORT).show();
             android.app.FragmentManager fragmentManager = getFragmentManager();
@@ -112,8 +113,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.action_share) {
 
-
-            MyLists ListName = new MyLists();
 
 
             /*LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -132,7 +131,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             btnShare.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    MyLists ListName = new MyLists();
                     con.publish("items", new String[]{"invite",con.clientId,ListName.getListname() , editText.getText().toString()});
                     Toast.makeText(getApplicationContext(),"List Shared",Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
@@ -201,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         } if (id == R.id.notifications) {
             setTitle(getString(R.string.title_section3));
-            fragmentManager.beginTransaction().replace(R.id.content_frame, new ThirdFragmant()).commit();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, new Notifications()).commit();
 
             if(con.getClient().isConnected()) {
                 Log.d("StateTest", "true");
