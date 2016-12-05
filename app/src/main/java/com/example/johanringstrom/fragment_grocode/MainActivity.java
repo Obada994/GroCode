@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         con.subscribeToTopic("fetch-SubscriptionList");
         con.subscribeToTopic("fetch-Notifications");
         con.subscribeToTopic("fetch-SubItems");
+        con.subscribeToTopic("fetch-BoughtSubItem");
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -115,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.action_share) {
 
             MyLists ListName = new MyLists();
-            con.publish("items", new String[]{"invite",con.clientId,ListName.getListname() , "nima@gmail.com"});
+
 
             /*LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             PopupWindow pw = new PopupWindow(inflater.inflate(R.layout.share_popup, null, true),300,350, true);
