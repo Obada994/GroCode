@@ -3,9 +3,7 @@ package com.example.johanringstrom.fragment_grocode;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.*;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 
@@ -71,5 +69,6 @@ public class ShareLists extends Fragment{
         return this.list.toString();
 
     }
+
 
 }

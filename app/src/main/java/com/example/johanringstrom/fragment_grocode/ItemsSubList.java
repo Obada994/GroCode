@@ -6,9 +6,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.*;
 
 import java.util.ArrayList;
@@ -40,6 +38,7 @@ public class ItemsSubList extends android.app.Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         //ListName =getArguments().getString("ListName");
         myView = inflater.inflate(R.layout.itemslist_layout, container, false);
+        setHasOptionsMenu(true);
 
         //Create connection object to get access to publish and subscribe
         con = new Connection(getActivity());
@@ -188,5 +187,12 @@ public class ItemsSubList extends android.app.Fragment {
             }
 
         }
+
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        inflater.inflate(R.menu.unsublist, menu);
+    }
+
 }

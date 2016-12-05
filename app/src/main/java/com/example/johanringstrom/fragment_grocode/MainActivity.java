@@ -20,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
     Connection con;
@@ -140,6 +139,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             return true;
 
+        }
+
+        if (id == R.id.action_unsub) {
+
+            //con.publish("items", new String[]{"reject-invite",con.clientId,list.toString()});
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
