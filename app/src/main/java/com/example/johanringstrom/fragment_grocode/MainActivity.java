@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         con.subscribeToTopic("fetch-SubscriptionList");
         con.subscribeToTopic("fetch-Notifications");
         con.subscribeToTopic("fetch-SubItems");
+        con.subscribeToTopic("fetch-BoughtSubItem");
     }
 
 
