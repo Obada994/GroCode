@@ -67,7 +67,7 @@ public class Deals extends Fragment {
             @Override
             public void onClick(View viewz) {
                 //noinspection MissingPermission
-                locationManager.requestLocationUpdates("gps", 5000, 0, listener);
+                locationManager.requestLocationUpdates("gps", 500, 0, listener);
             }
         });
     }

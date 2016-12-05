@@ -207,6 +207,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(MainActivity.this, "Logout Successful", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);        }
+        else if (id == R.id.deals) {
+            setTitle("Deals");
+            fragmentManager.beginTransaction().replace(R.id.content_frame, new Deals()).commit();
+
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
