@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(getApplicationContext(),"List Deleted",Toast.LENGTH_SHORT).show();
             android.app.FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, new MyLists()).commit();
+            setTitle("My Lists");
             return true;
 
         }
