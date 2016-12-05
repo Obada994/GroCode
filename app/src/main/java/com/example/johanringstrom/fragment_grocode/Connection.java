@@ -163,7 +163,8 @@ public class Connection extends AppCompatActivity implements MqttCallback {
                     toSend.put("request",args[0]);
                     Log.d("??args0>>>", args[0]);
                     //if it's not fetch then we need this key (data)
-                    if (!(args[0].equals("fetch") || args[0].equals("fetch-bought")|| args[0].equals("fetch-bought")|| args[0].equals("fetch-SubItems")|| args[0].equals("reject-invite")) )
+                    if (!(args[0].equals("fetch") || args[0].equals("fetch-bought")|| args[0].equals("fetch-bought")||
+                            args[0].equals("fetch-SubItems")|| args[0].equals("reject-invite")|| args[0].equals("fetch-BoughtSubItem")) )
                     {
                         Log.d("??args0>>>", args[0]);
                         data.put("item",args[3]);
@@ -360,6 +361,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
 
             }
         }
+        Log.d(">>Topic??", topic);
         if (topic.equals("Gro/"+clientId+"/fetch-lists")) {
             MyLists myLists = new MyLists();
             myLists.getListAdapter().clear();
@@ -401,6 +403,12 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             mySubItems.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++)
                 mySubItems.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
+        }
+        if (topic.equals("Gro/"+clientId+"/fetch-BoughtSubItem")) {//TODO
+            ItemsSubList myBoughtSubItems = new ItemsSubList();
+            myBoughtSubItems.getListAdapterBought().clear();
+            for (int i = 0; i < itemArr.length(); i++)
+                myBoughtSubItems.getListAdapterBought().add((String) itemArr.getJSONObject(i).get("item"));
         }
 
     }

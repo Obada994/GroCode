@@ -1,5 +1,6 @@
 package com.example.johanringstrom.fragment_grocode;
 
+
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 /**
  * Created by johanringstrom on 10/11/16.
  */
-public class ShareLists extends Fragment{
+public class ShareLists extends Fragment {
 
     View myView;
     private ListView ListView ;
@@ -50,9 +51,10 @@ public class ShareLists extends Fragment{
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 list = ListView.getItemAtPosition(position);
-                android.app.FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.content_frame, new ItemsSubList()).commit();
+                    android.app.FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.content_frame, new ItemsSubList()).commit();
                     con.publish("items", new String[]{"fetch-SubItems",con.clientId,list.toString()});
+                    con.publish("items", new String[]{"fetch-BoughtSubItem",con.clientId,list.toString()});
             }
         });
 
