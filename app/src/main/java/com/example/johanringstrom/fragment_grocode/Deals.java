@@ -16,76 +16,72 @@ import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import static android.content.Context.LOCATION_SERVICE;
 
 
 public class Deals extends Fragment {
 
+    private android.widget.ListView ListView ;
+    private static ArrayAdapter<String> listAdapter ;
+    ArrayList<String> gogoDeals;
 
     private View view;
-    private Button b;
-    private TextView t;
     private LocationManager locationManager;
-    private LocationListener listener;;
+    private LocationListener listener;
+    private Connection con;
+    private double latitude;
+    private double longitude;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.activity_deals, container, false);
 
+        con = new Connection(getActivity(),Connection.clientId);
+        con.subscribeToDeals();
 
-
-
-
-        return view;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode){
-            case 10:
-                configure_button();
-                break;
-            default:
-                break;
-        }
-    }
-
-    void configure_button(){
-        // first check for permissions
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.INTERNET}
-                        ,10);
-            }
-            return;
-        }
-        // this code won't execute IF permissions are not allowed, because in the line above there is return statement.
-        b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View viewz) {
-                //noinspection MissingPermission
-                locationManager.requestLocationUpdates("gps", 500, 0, listener);
-            }
-        });
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        t = (TextView) getActivity().findViewById(R.id.textView);
-        b = (Button) getActivity().findViewById(R.id.button);
+        //List view to display list
+        ListView = (ListView) view.findViewById(R.id.listView);
+        //Create a adapter to listview
+        gogoDeals = new ArrayList<>();
+        gogoDeals.add("item");
+        listAdapter = new ArrayAdapter<>(getActivity(), R.layout.simplerow, gogoDeals);
+        ListView.setAdapter(listAdapter);
 
         locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
-
 
         listener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                t.setText("\n " + location.getLongitude() + " " + location.getLatitude());
+                longitude = location.getLongitude();
+                latitude = location.getLatitude();
+                JSONObject toSend=new JSONObject();
+                JSONObject data=new JSONObject();
+                try {
+                    toSend.put("id",con.clientId);
+                    data.put("longitude",longitude);
+                    data.put("latitude",latitude);
+                    data.put("filters","food");
+                    toSend.put("data",data);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    con.getClient().publish("deal/gogodeals/deal/fetch",new MqttMessage(toSend.toString().getBytes()));
+                } catch (MqttException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -107,6 +103,36 @@ public class Deals extends Fragment {
         };
 
         configure_button();
+
+        return view;
+    }
+    //Gets listadapter
+    public ArrayAdapter<String> getListAdapter(){
+        return this.listAdapter;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case 10:
+                configure_button();
+                break;
+            default:
+                break;
+        }
+    }
+
+    void configure_button(){
+        // first check for permissions
+        if (ActivityCompat.checkSelfPermission(getActivity(),
+            Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(),
+            Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED)
+        {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.INTERNET},10);
+            }
+            locationManager.requestLocationUpdates("gps", 500, 0, listener);
+        }
     }
 }
-
