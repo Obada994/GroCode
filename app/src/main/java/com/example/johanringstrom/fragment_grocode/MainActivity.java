@@ -218,7 +218,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent);        }
         else if (id == R.id.deals) {
             setTitle("Deals");
-            fragmentManager.beginTransaction().replace(R.id.content_frame, new Deals()).commit();
+            Deals d = new Deals();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, d).commit();
 
         }
 

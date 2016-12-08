@@ -2,12 +2,10 @@ package com.example.johanringstrom.fragment_grocode;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -31,7 +29,7 @@ import static android.content.Context.LOCATION_SERVICE;
 public class Deals extends Fragment {
 
     private android.widget.ListView ListView ;
-    private static ArrayAdapter<String> listAdapter;
+    static ArrayAdapter<String> listAdapter;
     ArrayList<String> gogoDeals;
 
     private View view;
@@ -43,17 +41,17 @@ public class Deals extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+
         view = inflater.inflate(R.layout.activity_deals, container, false);
 
-        //Creat connection object to get accsess to publish and subscribe
-        con = new Connection(getActivity(),Connection.clientId);
-        con.subscribeToDeals();
-
-        ListView = (ListView) view.findViewById(R.id.dealsList);
+        ListView = (ListView) view.findViewById(R.id.listView);
         gogoDeals = new ArrayList<>();
         listAdapter = new ArrayAdapter<>(getActivity(), R.layout.simplerow, gogoDeals);
         ListView.setAdapter(listAdapter);
-
+        listAdapter.add("no available deals :(");
+        //Creat connection object to get accsess to publish and subscribe
+        con = new Connection(getActivity(),Connection.clientId);
+        con.subscribeToDeals();
 
         return view;
     }
@@ -78,8 +76,8 @@ public class Deals extends Fragment {
                 startReceivingLocationUpdates();
 
                 Location update = new Location("");
-                update.setLatitude(latitude);
-                update.setLongitude(longitude);
+                update.setLatitude(57.7071734);
+                update.setLongitude(11.9391119);
 
                 listener.onLocationChanged(update);
             }
@@ -132,18 +130,13 @@ public class Deals extends Fragment {
             @Override
             public void onProviderDisabled(String s) {
 
-                Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(i);
+//                Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//                startActivity(i);
             }
         };
 
         configure_button();
     }
-    //Gets listadapter
-    public ArrayAdapter<String> getListAdapter(){
-        return listAdapter;
-    }
-
     private void startReceivingLocationUpdates() {
 
         if (locationManager == null) {

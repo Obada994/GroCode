@@ -299,7 +299,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
         }
     }
     public void subscribeToDeals() {
-        String topic = "deal/gogodeals/deal/fetch";
+        String topic = "deal/gogodeals/database/deals";
         try {
             IMqttToken subToken = client.subscribe(topic, qos);
             subToken.setActionCallback(new IMqttActionListener() {
@@ -357,7 +357,16 @@ public class Connection extends AppCompatActivity implements MqttCallback {
     public void messageArrived(String topic, MqttMessage message) throws Exception {
         JSONObject Obj = new JSONObject(new String(message.getPayload()));
         //if it's not a reply from the server then just ignore it
-
+        if(topic.equals("deal/gogodeals/database/deals"))
+        {
+            Deals.listAdapter.clear();
+            JSONArray itemArr = Obj.getJSONArray("data");
+            for(int i=0;i<itemArr.length(); i++)
+            {
+                //add them both in one list item, need to create a custom layout...etc
+               Deals.listAdapter.add((String) itemArr.getJSONObject(i).get("name"));
+            }
+        }
         if (!Obj.has("reply"))
             return;
         JSONArray itemArr = null;
@@ -402,43 +411,30 @@ public class Connection extends AppCompatActivity implements MqttCallback {
                 myBoughtItems.getListAdapterBought().add((String) itemArr.getJSONObject(i).get("item"));
 
         }
-        if (topic.equals("Gro/" + clientId + "/fetch-SubscriptionList")) {//TODO
+        if (topic.equals("Gro/" + clientId + "/fetch-SubscriptionList")) {
             ShareLists mySubLists = new ShareLists();
             mySubLists.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++)
                 mySubLists.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
         }
-        if (topic.equals("Gro/" + clientId + "/fetch-Notifications")) {//TODO
+        if (topic.equals("Gro/" + clientId + "/fetch-Notifications")) {
             Notifications myNotifications = new Notifications();
             myNotifications.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++)
                 myNotifications.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
         }
-        if (topic.equals("Gro/" + clientId + "/fetch-SubItems")) {//TODO
+        if (topic.equals("Gro/" + clientId + "/fetch-SubItems")) {
             ItemsSubList mySubItems = new ItemsSubList();
             mySubItems.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++)
                 mySubItems.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
         }
-        if (topic.equals("Gro/" + clientId + "/fetch-BoughtSubItem")) {//TODO
+        if (topic.equals("Gro/" + clientId + "/fetch-BoughtSubItem")) {
             ItemsSubList myBoughtSubItems = new ItemsSubList();
             myBoughtSubItems.getListAdapterBought().clear();
             for (int i = 0; i < itemArr.length(); i++)
                 myBoughtSubItems.getListAdapterBought().add((String) itemArr.getJSONObject(i).get("item"));
         }
-        if (topic.equals("deal/gogodeals/deal/fetch"))
-        {
-            Deals deals = new Deals();
-            deals.getListAdapter().clear();
-            for(int i=0;i<itemArr.length(); i++)
-            {
-                //add them both in one list item, need to create a custom layout...etc
-                deals.getListAdapter().add((String) itemArr.getJSONObject(i).get("name"));
-                deals.getListAdapter().add((String) itemArr.getJSONObject(i).get("price"));
-            }
-
-        }
-
     }
     boolean loggedin(String email,String pass)
     {
