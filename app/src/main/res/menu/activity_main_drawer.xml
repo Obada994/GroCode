@@ -18,7 +18,7 @@
 
         <item
                 android:id="@+id/deals"
-                android:icon="@drawable/ic_notifications"
+                android:icon="@drawable/ic_menu_deals"
                 android:title="Deals"/>
 
         <item
