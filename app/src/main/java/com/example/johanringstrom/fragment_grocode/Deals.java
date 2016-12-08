@@ -30,6 +30,10 @@ public class Deals extends Fragment {
     private android.widget.ListView ListView ;
     static ArrayAdapter<String> listAdapter;
     ArrayList<String> gogoDeals;
+    static Dialog dialog;
+    static TextView name;
+    static TextView price;
+    static TextView description;
 
     private View view;
     private Button b;
@@ -52,17 +56,22 @@ public class Deals extends Fragment {
         con = new Connection(getActivity(),Connection.clientId);
         con.subscribeToDeals();
 
+        dialog = new Dialog(getActivity(),R.style.AppTheme_Dark_Dialog);
+        dialog.setContentView(R.layout.deal_dialog);
+        dialog.setTitle("Deal information");
+        name = (TextView) dialog.findViewById(R.id.nameText);
+        price = (TextView) dialog.findViewById(R.id.priceText);
+        description = (TextView) dialog.findViewById(R.id.descriptionText);
         //Set what to do when a list item is clicked
         ListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 Object item = ListView.getItemAtPosition(position);
-               // con.publish("items", new String[]{"setToBought",con.clientId,ListName, item.toString()});
-
-                final Dialog dialog = new Dialog(getActivity(),R.style.AppTheme_Dark_Dialog);
-                dialog.setContentView(R.layout.deal_dialog);
-                dialog.setTitle("Deal information");
+                DealsObjects tmp = DealsObjects.findByName(item.toString());
+                name.setText("Name: "+item.toString()+" ");
+                price.setText("Price: "+tmp.price+" SEK ");
+                description.setText("Description: "+tmp.description+" ");
                 dialog.show();
             }
         });

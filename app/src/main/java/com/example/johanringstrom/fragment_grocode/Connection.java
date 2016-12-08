@@ -359,12 +359,18 @@ public class Connection extends AppCompatActivity implements MqttCallback {
         //if it's not a reply from the server then just ignore it
         if(topic.equals("deal/gogodeals/database/deals"))
         {
+            //remove all the old deals from the old location
+//            if(DealsObjects.list.size()==0)
+//            DealsObjects.list.clear();
             Deals.listAdapter.clear();
             JSONArray itemArr = Obj.getJSONArray("data");
+
             for(int i=0;i<itemArr.length(); i++)
             {
-                //add them both in one list item, need to create a custom layout...etc
+               //add the name of the deal to the activity
                Deals.listAdapter.add((String) itemArr.getJSONObject(i).get("name"));
+                //add the new deals to the list
+                new DealsObjects(new String[]{(String) itemArr.getJSONObject(i).get("name"), String.valueOf(itemArr.getJSONObject(i).getInt("price")),(String) itemArr.getJSONObject(i).get("description")});
             }
         }
         if (!Obj.has("reply"))
