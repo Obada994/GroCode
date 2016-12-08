@@ -24,11 +24,10 @@ public class MyLists extends Fragment{
 
     View myView;
     private ListView ListView ;
-    private static  ArrayAdapter<String> listAdapter ;
+    private static  ArrayAdapter<String> listAdapter;
     ArrayList<String> GroList;
     private EditText EditText;
     Connection con;
-    private MqttAndroidClient client;
     private static Object list;
     private ImageButton btnSpeak;
     private final int REQ_CODE_SPEECH_INPUT = 100;
