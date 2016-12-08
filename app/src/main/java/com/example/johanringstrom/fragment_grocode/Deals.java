@@ -1,28 +1,19 @@
 package com.example.johanringstrom.fragment_grocode;
 
-import android.Manifest;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
-
+import android.widget.*;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
@@ -52,6 +43,7 @@ public class Deals extends Fragment {
 
         view = inflater.inflate(R.layout.activity_deals, container, false);
         ListView = (ListView) view.findViewById(R.id.listView);
+
         gogoDeals = new ArrayList<>();
         listAdapter = new ArrayAdapter<>(getActivity(), R.layout.simplerow, gogoDeals);
         ListView.setAdapter(listAdapter);
@@ -59,6 +51,21 @@ public class Deals extends Fragment {
         //Creat connection object to get accsess to publish and subscribe
         con = new Connection(getActivity(),Connection.clientId);
         con.subscribeToDeals();
+
+        //Set what to do when a list item is clicked
+        ListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                Object item = ListView.getItemAtPosition(position);
+               // con.publish("items", new String[]{"setToBought",con.clientId,ListName, item.toString()});
+
+                final Dialog dialog = new Dialog(getActivity(),R.style.AppTheme_Dark_Dialog);
+                dialog.setContentView(R.layout.deal_dialog);
+                dialog.setTitle("Deal information");
+                dialog.show();
+            }
+        });
 
         return view;
     }
@@ -79,6 +86,7 @@ public class Deals extends Fragment {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View viewz) {
+
                 startReceivingLocationUpdates();
 
                 Location update = new Location("");

@@ -2,44 +2,60 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
-
-
     <EditText
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
             android:hint="Add product"
             android:id="@+id/editText"
             android:inputType="text|textCapWords"
             android:imeOptions="actionDone"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="75dp"
-            android:layout_toStartOf="@+id/add"
-            android:layout_alignEnd="@+id/add"/>
-    <Button
-            android:layout_marginTop="10dp"
+            android:layout_alignParentStart="false"
+            android:layout_toLeftOf="@+id/btnSpeak"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="false"
+            android:layout_marginLeft="10dp"/>
+    <ImageButton
+            android:padding="5dp"
+            android:background="@null"
+            android:scaleType="centerInside"
             android:layout_width="75dp"
             android:layout_height="wrap_content"
-            android:text="Add"
-            android:id="@+id/add"
+            android:layout_margin="5dp"
+            android:layout_alignTop="@+id/editText"
             android:layout_alignBottom="@+id/editText"
+            android:src="@drawable/mic"
+            android:id="@+id/btnSpeak"
+            android:layout_alignParentStart="false"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="78dp"/>
-    <ImageButton
-            android:layout_marginTop="11dp"
-            android:scaleType="centerInside"
-            android:layout_width="75dp" android:layout_height="wrap_content" android:src="@drawable/mic"
-            android:layout_alignBottom="@+id/editText" android:layout_toEndOf="@+id/editText"
-            android:id="@+id/btnSpeak"/>
+            />
+
+    <Space
+            android:id="@+id/space1"
+            android:layout_below="@id/editText"
+            android:layout_width="20px"
+            android:layout_height="20px"
+            />
+
+    <View style="@style/Divider"
+          android:id="@+id/divider"
+          android:layout_below="@id/space1"/>
+
+    <Space
+            android:layout_below="@+id/divider"
+            android:id="@+id/space2"
+            android:background="@color/primary_darker"
+            android:layout_width="20px"
+            android:layout_height="20px"
+            />
 
     <ScrollView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:fillViewport="true"
-            android:layout_below="@id/editText">
+            android:layout_below="@id/space2">
 
-        <LinearLayout
+    <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -48,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/addedLabel"
-            android:text="Added products"
+            android:text="Grocery List"
             android:background="@color/primary_darker"
             android:gravity="center_horizontal"/>
             <com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView
@@ -71,5 +87,4 @@
             android:id="@+id/listView2"/>
         </LinearLayout>
     </ScrollView>
-
 </RelativeLayout>

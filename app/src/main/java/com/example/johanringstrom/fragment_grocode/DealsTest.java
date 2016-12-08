@@ -16,6 +16,7 @@ import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
 
+
 /**
  * Created by johanringstrom on 10/11/16.
  */

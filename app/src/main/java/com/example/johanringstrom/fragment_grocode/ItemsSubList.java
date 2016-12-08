@@ -1,12 +1,11 @@
 package com.example.johanringstrom.fragment_grocode;
 
+import android.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
-import android.app.Fragment;
 import android.view.*;
 import android.view.inputmethod.EditorInfo;
 import android.widget.*;
@@ -42,7 +41,6 @@ public class ItemsSubList extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         //ListName =getArguments().getString("ListName");
         myView = inflater.inflate(R.layout.itemslist_layout, container, false);
-
         setHasOptionsMenu(true);
 
 
@@ -51,55 +49,42 @@ public class ItemsSubList extends Fragment {
         btnSpeak = (ImageButton) myView.findViewById(R.id.btnSpeak);
         EditText = (EditText) myView.findViewById(R.id.editText);
 
-        /*EditText.setOnEditorActionListener(
+        EditText.setOnEditorActionListener(
                 new EditText.OnEditorActionListener() {
                     @Override
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                        // Identifier of the action. This will be either the identifier you supplied,
-                        // or EditorInfo.IME_NULL if being called due to the enter key being pressed.
+                        // Identifier of the action. Handles what happens when you click enter on keyboard and
+                        // enter on soft keyboard on phones, emulator.
                         if (actionId == EditorInfo.IME_ACTION_SEARCH
                                 || actionId == EditorInfo.IME_ACTION_DONE
                                 || event.getAction() == KeyEvent.ACTION_DOWN
                                 && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                            //args[0]=request, args[1]=email, args[2]=list, args[3]=item
-                            con.publish("items", new String[]{"add-subItem",con.clientId,ListName, EditText.getText().toString()});//add item
+                            //add item
+                            con.publish("items", new String[]{"add-subItem",con.clientId,ListName, EditText.getText().toString()});
                             //fetch the updated list
                             con.publish("items", new String[]{"fetch-SubItems",con.clientId,ListName});
+                            Toast.makeText(getActivity(),
+                                    EditText.getText()+" has been added", Toast.LENGTH_LONG).show();
+                            ItemsList.hideKeyboardFrom(getActivity(),myView);
                             EditText.setText("");
                             return true;
                         }
                         // Return true if you have consumed the action, else false.
                         return false;
                     }
-                });*/
-
-
-       /* EditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-
-        EditText = (EditText) myView.findViewById(R.id.editText);
-        EditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    //args[0]=request, args[1]=email, args[2]=list, args[3]=item
-                    con.publish("items", new String[]{"add",con.clientId,ListName, EditText.getText().toString()});
-                    con.publish("items", new String[]{"fetch",con.clientId,ListName});
-                    EditText.setText("");
-                }
-                return true;
-            }
-        });*/
+                });
 
         //Create myList object to get accsess to its methods
         ShareLists myItems = new ShareLists();
         ListName = myItems.getListname();
+        getActivity().setTitle(myItems.getListname());
+
 
 
         //List view to display list
-       final ExpandableHeightListView mListView = (ExpandableHeightListView) myView.findViewById(R.id.listView);
+        final ExpandableHeightListView mListView = (ExpandableHeightListView) myView.findViewById(R.id.listView);
         final ExpandableHeightListView mListView2 = (ExpandableHeightListView) myView.findViewById(R.id.listView2);
-        //mListView = (ListView) myView.findViewById(R.id.listView);
-        //mListView2 = (ListView) myView.findViewById(R.id.listView2);
+
 
 
         //Create a adapter to listview
@@ -120,12 +105,11 @@ public class ItemsSubList extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 Object item = mListView.getItemAtPosition(position);
-               /* TextView text = (TextView) view;
-                text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);*/
-                //args[0]=request, args[1]=email, args[2]=list, args[3]=item
                 con.publish("items", new String[]{"setSubItemsToBought",con.clientId,ListName, item.toString()});
                 con.publish("items", new String[]{"fetch-BoughtSubItem",con.clientId,ListName.toString()});
                 con.publish("items", new String[]{"fetch-SubItems",con.clientId,ListName});
+                Toast.makeText(getActivity(),
+                        item.toString()+" has been bought", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -137,33 +121,11 @@ public class ItemsSubList extends Fragment {
                 //args[0]=request, args[1]=email, args[2]=list, args[3]=item
                 con.publish("items", new String[]{"delete-SubItem",con.clientId,ListName, item.toString()});
                 con.publish("items", new String[]{"fetch-BoughtSubItem",con.clientId,ListName.toString()});
+                Toast.makeText(getActivity(),
+                        item.toString()+" has been deleted", Toast.LENGTH_LONG).show();
 
             }
         });
-
-        //What to do when the add button is pressed
-        final Button btnAdd = (Button) myView.findViewById(R.id.add);
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                //args[0]=request, args[1]=email, args[2]=list, args[3]=item
-                con.publish("items", new String[]{"add-subItem",con.clientId,ListName, EditText.getText().toString()});//add item
-                //fetch the updated list
-                con.publish("items", new String[]{"fetch-SubItems",con.clientId,ListName});
-
-
-                EditText.setText("");
-
-            }
-        });
-
-        /*final Button bought = (Button) myView.findViewById(R.id.Baught);
-        bought.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                //args[0]=request, args[1]=email, args[2]=list, args[3]=item
-                con.publish("items", new String[]{"fetch-bought",con.clientId,ListName.toString()});
-
-            }
-        });*/
 
 
         btnSpeak.setOnClickListener(new View.OnClickListener() {
@@ -214,7 +176,11 @@ public class ItemsSubList extends Fragment {
 
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    editText.setText(result.get(0));
+                    con.publish("items", new String[]{"add-subItem",con.clientId,ListName, result.get(0).toString()});
+                    //fetch the updated list
+                    con.publish("items", new String[]{"fetch-SubItems",con.clientId,ListName});
+                    Toast.makeText(getActivity(),
+                            result.get(0)+" has been added", Toast.LENGTH_LONG).show();
                 }
                 break;
             }
