@@ -60,6 +60,8 @@ public class ItemsList extends Fragment{
                                 && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
                             con.publish("items", new String[]{"add",con.clientId,ListName, EditText.getText().toString()});
                             con.publish("items", new String[]{"fetch",con.clientId,ListName});
+                            Toast.makeText(getActivity(),
+                                    item.toString()+" has been added", Toast.LENGTH_LONG).show();
                             EditText.setText("");
                             return true;
                         }
@@ -124,29 +126,7 @@ public class ItemsList extends Fragment{
             }
         });
 
-        //What to do when the add button is pressed
-        final Button btnAdd = (Button) myView.findViewById(R.id.add);
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                //args[0]=request, args[1]=email, args[2]=list, args[3]=item
-                con.publish("items", new String[]{"add",con.clientId,ListName, EditText.getText().toString()});//add item
-                //fetch the updated list
-                con.publish("items", new String[]{"fetch",con.clientId,ListName});
 
-                EditText.setText("");
-
-
-            }
-        });
-
-        /*final Button bought = (Button) myView.findViewById(R.id.Baught);
-        bought.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                //args[0]=request, args[1]=email, args[2]=list, args[3]=item
-               // con.publish("boughtItems", new String[]{"fetch-bought",con.clientId,ListName.toString()});
-
-            }
-        });*/
 
 
         btnSpeak.setOnClickListener(new View.OnClickListener() {

@@ -30,7 +30,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             //Set clientId and create new create a MqttAndroid client
             //String clientId = MqttClient.generateClientId();
             this.client =
-                    new MqttAndroidClient(context, "tcp://test.mosquitto.org:1883",
+                    new MqttAndroidClient(context, "tcp://54.154.153.243:1883",
                             //Tryes to connect this client to a the  broker. test.mosquitto.org
                             clientId);//"tcp://192.168.43.185:1883
             try {
@@ -66,7 +66,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             //Set clientId and create new create a MqttAndroid client
             //String clientId = MqttClient.generateClientId();
             this.client =
-                    new MqttAndroidClient(context, "tcp://broker.hivemq.com:1883",
+                    new MqttAndroidClient(context, "tcp://54.154.153.243:1883",
             //Tryes to connect this client to a the  broker. test.mosquitto.org
                             clientId);//"tcp://192.168.43.185:1883
             try {

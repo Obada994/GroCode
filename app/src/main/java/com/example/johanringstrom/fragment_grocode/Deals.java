@@ -67,7 +67,7 @@ public class Deals extends Fragment {
             @Override
             public void onClick(View viewz) {
                 //noinspection MissingPermission
-                locationManager.requestLocationUpdates("gps", 500, 0, listener);
+               // locationManager.requestLocationUpdates("gps", 500, 0, listener);
             }
         });
     }
@@ -77,7 +77,6 @@ public class Deals extends Fragment {
         super.onStart();
 
         t = (TextView) getActivity().findViewById(R.id.textView);
-        b = (Button) getActivity().findViewById(R.id.button);
 
         locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
