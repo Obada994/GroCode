@@ -55,7 +55,7 @@ public class Deals extends Fragment {
         gogoDeals = new ArrayList<>();
         listAdapter = new ArrayAdapter<>(getActivity(), R.layout.simplerow, gogoDeals);
         ListView.setAdapter(listAdapter);
-        listAdapter.add("test");
+        listAdapter.add("no available deals :(");
         //Creat connection object to get accsess to publish and subscribe
         con = new Connection(getActivity(),Connection.clientId);
         con.subscribeToDeals();

@@ -365,7 +365,6 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             {
                 //add them both in one list item, need to create a custom layout...etc
                Deals.listAdapter.add((String) itemArr.getJSONObject(i).get("name"));
-               Deals.listAdapter.add((String) itemArr.getJSONObject(i).get("price"));
             }
         }
         if (!Obj.has("reply"))
