@@ -1,5 +1,6 @@
 package com.example.johanringstrom.fragment_grocode;
 
+import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.location.Location;
@@ -12,9 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
+import android.widget.*;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
@@ -43,8 +42,8 @@ public class Deals extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.activity_deals, container, false);
-
         ListView = (ListView) view.findViewById(R.id.listView);
+
         gogoDeals = new ArrayList<>();
         listAdapter = new ArrayAdapter<>(getActivity(), R.layout.simplerow, gogoDeals);
         ListView.setAdapter(listAdapter);
@@ -52,6 +51,21 @@ public class Deals extends Fragment {
         //Creat connection object to get accsess to publish and subscribe
         con = new Connection(getActivity(),Connection.clientId);
         con.subscribeToDeals();
+
+        //Set what to do when a list item is clicked
+        ListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                Object item = ListView.getItemAtPosition(position);
+               // con.publish("items", new String[]{"setToBought",con.clientId,ListName, item.toString()});
+
+                final Dialog dialog = new Dialog(getActivity(),R.style.AppTheme_Dark_Dialog);
+                dialog.setContentView(R.layout.deal_dialog);
+                dialog.setTitle("Deal information");
+                dialog.show();
+            }
+        });
 
         return view;
     }

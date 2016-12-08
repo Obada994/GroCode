@@ -16,10 +16,6 @@ import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
 
-<<<<<<<HEAD
-        =======
-        >>>>>>>d8fcdeccfd43719b76c5ae51752c0f961efcfb06
-
 
 /**
  * Created by johanringstrom on 10/11/16.
