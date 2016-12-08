@@ -1,19 +1,15 @@
 package com.example.johanringstrom.fragment_grocode;
 
-import android.Manifest;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,8 +17,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
-
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
@@ -50,14 +44,17 @@ public class Deals extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.activity_deals, container, false);
-        ListView = (ListView) view.findViewById(R.id.listView);
-        gogoDeals = new ArrayList<>();
-        gogoDeals.add("test");
-        listAdapter = new ArrayAdapter<>(getActivity(), R.layout.simplerow, gogoDeals);
-        ListView.setAdapter(listAdapter);
+
         //Creat connection object to get accsess to publish and subscribe
         con = new Connection(getActivity(),Connection.clientId);
         con.subscribeToDeals();
+
+        ListView = (ListView) view.findViewById(R.id.dealsList);
+        gogoDeals = new ArrayList<>();
+        listAdapter = new ArrayAdapter<>(getActivity(), R.layout.simplerow, gogoDeals);
+        ListView.setAdapter(listAdapter);
+
+
         return view;
     }
 

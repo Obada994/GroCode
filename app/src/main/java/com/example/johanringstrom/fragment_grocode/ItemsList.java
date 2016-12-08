@@ -1,13 +1,16 @@
 package com.example.johanringstrom.fragment_grocode;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
 import android.view.*;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView;
 
@@ -33,6 +36,7 @@ public class ItemsList extends Fragment{
     private static Object item;
     private Connection con;
     private ImageButton btnSpeak;
+    private Context context;
 
     @Nullable
     @Override
@@ -41,12 +45,13 @@ public class ItemsList extends Fragment{
         myView = inflater.inflate(R.layout.itemslist_layout, container, false);
         setHasOptionsMenu(true);
 
+
+
         //Create connection object to get access to publish and subscribe
         con = new Connection(getActivity());
         btnSpeak = (ImageButton) myView.findViewById(R.id.btnSpeak);
         EditText = (EditText) myView.findViewById(R.id.editText);
 
-        
 
         EditText.setOnEditorActionListener(
                 new EditText.OnEditorActionListener() {
@@ -61,7 +66,9 @@ public class ItemsList extends Fragment{
                             con.publish("items", new String[]{"add",con.clientId,ListName, EditText.getText().toString()});
                             con.publish("items", new String[]{"fetch",con.clientId,ListName});
                             Toast.makeText(getActivity(),
-                                    item.toString()+" has been added", Toast.LENGTH_LONG).show();
+                                    EditText.getText()+" has been added", Toast.LENGTH_LONG).show();
+                            hideKeyboardFrom(getActivity(),myView);
+
                             EditText.setText("");
                             return true;
                         }
@@ -69,6 +76,8 @@ public class ItemsList extends Fragment{
                         return false;
                     }
                 });
+
+
         
 
         //Create myList object to get accsess to its methods
@@ -80,8 +89,6 @@ public class ItemsList extends Fragment{
         //List view to display list
         final ExpandableHeightListView mListView = (ExpandableHeightListView) myView.findViewById(R.id.listView);
         final ExpandableHeightListView mListView2 = (ExpandableHeightListView) myView.findViewById(R.id.listView2);
-        //mListView = (ListView) myView.findViewById(R.id.listView);
-        //mListView2 = (ListView) myView.findViewById(R.id.listView2);
 
         //Create a adapter to listview
         GroList = new ArrayList<>();
@@ -101,13 +108,11 @@ public class ItemsList extends Fragment{
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 Object item = mListView.getItemAtPosition(position);
-                //text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                //args[0]=request, args[1]=email, args[2]=list, args[3]=item
                 con.publish("items", new String[]{"setToBought",con.clientId,ListName, item.toString()});
                 con.publish("items", new String[]{"fetch-bought",con.clientId,ListName});
                 con.publish("items", new String[]{"fetch",con.clientId,ListName});
                 Toast.makeText(getActivity(),
-                        item.toString()+" bought", Toast.LENGTH_LONG).show();
+                        item.toString()+" has been bought", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -116,13 +121,10 @@ public class ItemsList extends Fragment{
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 item = mListView2.getItemAtPosition(position);
-                /*TextView text = (TextView) view;
-                text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);*/
-                //args[0]=request, args[1]=email, args[2]=list, args[3]=item
                 con.publish("items", new String[]{"delete",con.clientId,ListName,item.toString() });
                 con.publish("items", new String[]{"fetch-bought",con.clientId,ListName.toString()});
                 Toast.makeText(getActivity(),
-                        item.toString()+" deleted", Toast.LENGTH_LONG).show();
+                        item.toString()+" has been deleted", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -181,7 +183,10 @@ public class ItemsList extends Fragment{
 
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    EditText.setText(result.get(0));
+                    con.publish("items", new String[]{"add",con.clientId,ListName, result.get(0).toString()});
+                    con.publish("items", new String[]{"fetch",con.clientId,ListName});
+                    Toast.makeText(getActivity(),
+                            result.get(0)+" has been added", Toast.LENGTH_LONG).show();
                 }
                 break;
             }
@@ -194,5 +199,11 @@ public class ItemsList extends Fragment{
         inflater.inflate(R.menu.list, menu);
     }
 
-
+    /*
+        Hide soft keyboard.
+     */
+    public static void hideKeyboardFrom(Context context, View myView) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(myView.getWindowToken(), 0);
+    }
 }
