@@ -68,7 +68,11 @@ public class Deals extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 Object item = ListView.getItemAtPosition(position);
-                DealsObjects tmp = DealsObjects.findByName(item.toString());
+                DealsObjects tmp=null;
+                if(DealsObjects.list.size()!=0)
+                tmp = DealsObjects.findByName(item.toString());
+                if(tmp==null)
+                    tmp = new DealsObjects(new String[]{"PLEASE CLICK UPDATE","OR","MOVE YOUR ASS TO A NEW LOCATION"});
                 name.setText("Name: "+item.toString()+" ");
                 price.setText("Price: "+tmp.price+" SEK ");
                 description.setText("Description: "+tmp.description+" ");

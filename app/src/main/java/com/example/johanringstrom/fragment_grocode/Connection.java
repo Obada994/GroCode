@@ -365,6 +365,8 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             Deals.listAdapter.clear();
             JSONArray itemArr = Obj.getJSONArray("data");
 
+            if(DealsObjects.list.size()!=0)
+                DealsObjects.list.clear();
             for(int i=0;i<itemArr.length(); i++)
             {
                //add the name of the deal to the activity
