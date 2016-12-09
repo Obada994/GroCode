@@ -20,7 +20,6 @@ import android.widget.*;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
 {
     Connection con;
-    private ListView ListView ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return true;
         }
 
+        //Delete list when delete is pressed and return to mylists view
         if (id == R.id.action_delete) {
             con.publish("lists", new String[]{"delete-list",con.clientId,ListName.getListname()});
             Toast.makeText(getApplicationContext(),"List Deleted",Toast.LENGTH_SHORT).show();
@@ -111,13 +111,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
 
+        //creating a popup dialog to be able to share list with another user
         if (id == R.id.action_share) {
-
-
-
-            /*LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            PopupWindow pw = new PopupWindow(inflater.inflate(R.layout.share_popup, null, true),300,350, true);
-            pw.showAtLocation(this.findViewById(R.id.content_frame), Gravity.CENTER, 0, 0);*/
 
             final Dialog dialog = new Dialog(this,R.style.AppTheme_Dark_Dialog);
             dialog.setContentView(R.layout.share_dialog);
@@ -129,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             dialog.show();
 
+            //button to handle email written in textfield and share with that user
             btnShare.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     con.publish("items", new String[]{"invite",con.clientId,ListName.getListname() , editText.getText().toString()});
@@ -137,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             });
 
+            //Cancel the sharing and dismiss dialog
             btnCancel.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     dialog.dismiss();
@@ -147,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
 
+        // unsub to list if Unsubsrcribe is pressed and return to sharedlist layout
         if (id == R.id.action_unsub) {
             ShareLists sl = new ShareLists();
             con.publish("items", new String[]{"reject-invite",con.clientId, sl.getListname() });
