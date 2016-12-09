@@ -30,7 +30,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             //Set clientId and create new create a MqttAndroid client
             //String clientId = MqttClient.generateClientId();
             this.client =
-                    new MqttAndroidClient(context, "tcp://test.mosquitto.org:1883",
+                    new MqttAndroidClient(context, "tcp://54.154.153.243:1883",
                             //Tryes to connect this client to a the  broker. test.mosquitto.org
                             clientId);//"tcp://192.168.43.185:1883
             try {
@@ -66,7 +66,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             //Set clientId and create new create a MqttAndroid client
             //String clientId = MqttClient.generateClientId();
             this.client =
-                    new MqttAndroidClient(context, "tcp://broker.hivemq.com:1883",
+                    new MqttAndroidClient(context, "tcp://54.154.153.243:1883",
             //Tryes to connect this client to a the  broker. test.mosquitto.org
                             clientId);//"tcp://192.168.43.185:1883
             try {
@@ -250,7 +250,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
 
     }
     //Subscribe to a predefined topic
-    public  void subscribeToTopic() {
+    public void subscribeToTopic() {
         //Subscribe to root client + client
         String topic = "Gro/"+clientId;
         try {
@@ -298,6 +298,30 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             e.printStackTrace();
         }
     }
+    public void subscribeToDeals() {
+        String topic = "deal/gogodeals/database/deals";
+        try {
+            IMqttToken subToken = client.subscribe(topic, qos);
+            subToken.setActionCallback(new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    // The message was published
+
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken,
+                                      Throwable exception) {
+                    // The subscription could not be performed, maybe the user was not
+                    // authorized to subscribe on the specified topic e.g. using wildcards
+
+                }
+            });
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
     //Unsubscribe to predefined list.
     public void unSubscribe(){
         String topic = "Gro/"+clientId;
@@ -333,7 +357,24 @@ public class Connection extends AppCompatActivity implements MqttCallback {
     public void messageArrived(String topic, MqttMessage message) throws Exception {
         JSONObject Obj = new JSONObject(new String(message.getPayload()));
         //if it's not a reply from the server then just ignore it
+        if(topic.equals("deal/gogodeals/database/deals"))
+        {
+            //remove all the old deals from the old location
+//            if(DealsObjects.list.size()==0)
+//            DealsObjects.list.clear();
+            Deals.listAdapter.clear();
+            JSONArray itemArr = Obj.getJSONArray("data");
 
+            if(DealsObjects.list.size()!=0)
+                DealsObjects.list.clear();
+            for(int i=0;i<itemArr.length(); i++)
+            {
+               //add the name of the deal to the activity
+               Deals.listAdapter.add((String) itemArr.getJSONObject(i).get("name"));
+                //add the new deals to the list
+                new DealsObjects(new String[]{(String) itemArr.getJSONObject(i).get("name"), String.valueOf(itemArr.getJSONObject(i).getInt("price")),(String) itemArr.getJSONObject(i).get("description")});
+            }
+        }
         if (!Obj.has("reply"))
             return;
         JSONArray itemArr = null;
@@ -348,63 +389,60 @@ public class Connection extends AppCompatActivity implements MqttCallback {
 
             if (message.toString().equals("{\"reply\":\"done\"}")) {
                 loggedin = true;
-            } else
-            {
-                loggedin=false;
-               // sub=false;
+            } else {
+                loggedin = false;
+                // sub=false;
 
             }
         }
         Log.d(">>Topic??", topic);
-        if (topic.equals("Gro/"+clientId+"/fetch-lists")) {
+        if (topic.equals("Gro/" + clientId + "/fetch-lists")) {
             MyLists myLists = new MyLists();
             myLists.getListAdapter().clear();
-            for(int i=0; i<itemArr.length(); i++)
-            {
+            for (int i = 0; i < itemArr.length(); i++) {
                 myLists.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
             }
         }
         // if the data are items update the items activities
 
-        if (topic.equals("Gro/"+clientId+"/fetch")) {
+        if (topic.equals("Gro/" + clientId + "/fetch")) {
             ItemsList myItems = new ItemsList();
             myItems.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++)
                 myItems.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
 
         }
-        if (topic.equals("Gro/"+clientId+"/fetch-bought")) {
+        if (topic.equals("Gro/" + clientId + "/fetch-bought")) {
             ItemsList myBoughtItems = new ItemsList();
             myBoughtItems.getListAdapterBought().clear();
             for (int i = 0; i < itemArr.length(); i++)
                 myBoughtItems.getListAdapterBought().add((String) itemArr.getJSONObject(i).get("item"));
 
         }
-        if (topic.equals("Gro/"+clientId+"/fetch-SubscriptionList")) {//TODO
+        if (topic.equals("Gro/" + clientId + "/fetch-SubscriptionList")) {
             ShareLists mySubLists = new ShareLists();
             mySubLists.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++)
                 mySubLists.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
         }
-        if (topic.equals("Gro/"+clientId+"/fetch-Notifications")) {//TODO
+        if (topic.equals("Gro/" + clientId + "/fetch-Notifications")) {
             Notifications myNotifications = new Notifications();
             myNotifications.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++)
                 myNotifications.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
         }
-        if (topic.equals("Gro/"+clientId+"/fetch-SubItems")) {//TODO
+        if (topic.equals("Gro/" + clientId + "/fetch-SubItems")) {
             ItemsSubList mySubItems = new ItemsSubList();
             mySubItems.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++)
                 mySubItems.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
         }
-        if (topic.equals("Gro/"+clientId+"/fetch-BoughtSubItem")) {//TODO
+        if (topic.equals("Gro/" + clientId + "/fetch-BoughtSubItem")) {
             ItemsSubList myBoughtSubItems = new ItemsSubList();
             myBoughtSubItems.getListAdapterBought().clear();
             for (int i = 0; i < itemArr.length(); i++)
                 myBoughtSubItems.getListAdapterBought().add((String) itemArr.getJSONObject(i).get("item"));
         }
-
     }
     boolean loggedin(String email,String pass)
     {

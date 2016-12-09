@@ -1,43 +1,84 @@
 package com.example.johanringstrom.fragment_grocode;
 
-import android.Manifest;
+import android.app.Dialog;
 import android.app.Fragment;
-import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
+import android.widget.*;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.util.ArrayList;
+
+import static android.content.ContentValues.TAG;
 import static android.content.Context.LOCATION_SERVICE;
 
 
 public class Deals extends Fragment {
 
+    private android.widget.ListView ListView ;
+    static ArrayAdapter<String> listAdapter;
+    ArrayList<String> gogoDeals;
+    static Dialog dialog;
+    static TextView name;
+    static TextView price;
+    static TextView description;
 
     private View view;
     private Button b;
-    private TextView t;
     private LocationManager locationManager;
-    private LocationListener listener;;
+    private LocationListener listener;
+    Connection con;
+    double longitude,latitude;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+
         view = inflater.inflate(R.layout.activity_deals, container, false);
+        ListView = (ListView) view.findViewById(R.id.listView);
 
+        gogoDeals = new ArrayList<>();
+        listAdapter = new ArrayAdapter<>(getActivity(), R.layout.simplerow, gogoDeals);
+        ListView.setAdapter(listAdapter);
+        listAdapter.add("no available deals :(");
+        //Creat connection object to get accsess to publish and subscribe
+        con = new Connection(getActivity(),Connection.clientId);
+        con.subscribeToDeals();
 
-
-
+        dialog = new Dialog(getActivity(),R.style.AppTheme_Dark_Dialog);
+        dialog.setContentView(R.layout.deal_dialog);
+        dialog.setTitle("Deal information");
+        name = (TextView) dialog.findViewById(R.id.nameText);
+        price = (TextView) dialog.findViewById(R.id.priceText);
+        description = (TextView) dialog.findViewById(R.id.descriptionText);
+        //Set what to do when a list item is clicked
+        ListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                Object item = ListView.getItemAtPosition(position);
+                DealsObjects tmp=null;
+                if(DealsObjects.list.size()!=0)
+                tmp = DealsObjects.findByName(item.toString());
+                if(tmp==null)
+                    tmp = new DealsObjects(new String[]{"PLEASE CLICK UPDATE","OR","MOVE YOUR ASS TO A NEW LOCATION"});
+                name.setText("Name: "+item.toString()+" ");
+                price.setText("Price: "+tmp.price+" SEK ");
+                description.setText("Description: "+tmp.description+" ");
+                dialog.show();
+            }
+        });
 
         return view;
     }
@@ -54,20 +95,18 @@ public class Deals extends Fragment {
     }
 
     void configure_button(){
-        // first check for permissions
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.INTERNET}
-                        ,10);
-            }
-            return;
-        }
-        // this code won't execute IF permissions are not allowed, because in the line above there is return statement.
+
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View viewz) {
-                //noinspection MissingPermission
-                locationManager.requestLocationUpdates("gps", 500, 0, listener);
+
+                startReceivingLocationUpdates();
+
+                Location update = new Location("");
+                update.setLatitude(57.7071734);
+                update.setLongitude(11.9391119);
+
+                listener.onLocationChanged(update);
             }
         });
     }
@@ -76,16 +115,33 @@ public class Deals extends Fragment {
     public void onStart() {
         super.onStart();
 
-        t = (TextView) getActivity().findViewById(R.id.textView);
         b = (Button) getActivity().findViewById(R.id.button);
 
+        b.setText("update");
         locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
-
 
         listener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                t.setText("\n " + location.getLongitude() + " " + location.getLatitude());
+                longitude = location.getLongitude();
+                latitude = location.getLatitude();
+
+                JSONObject toSend=new JSONObject();
+                JSONObject data=new JSONObject();
+                try {
+                    toSend.put("id",con.clientId);
+                    data.put("longitude",longitude);
+                    data.put("latitude",latitude);
+                    data.put("filters","food");
+                    toSend.put("data",data);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    con.getClient().publish("deal/gogodeals/deal/fetch",new MqttMessage(toSend.toString().getBytes()));
+                } catch (MqttException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -95,18 +151,69 @@ public class Deals extends Fragment {
 
             @Override
             public void onProviderEnabled(String s) {
-
+                startReceivingLocationUpdates();
             }
 
             @Override
             public void onProviderDisabled(String s) {
 
-                Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(i);
+//                Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//                startActivity(i);
             }
         };
 
         configure_button();
     }
-}
+    private void startReceivingLocationUpdates() {
 
+        if (locationManager == null) {
+
+            locationManager = (android.location.LocationManager)
+                    getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+        }
+
+        if (locationManager != null) {
+
+            try {
+
+                locationManager.requestLocationUpdates(
+
+                        android.location.LocationManager.NETWORK_PROVIDER,
+                        0,
+                        0,
+                        listener);
+
+            }
+            catch (SecurityException ex)
+            {
+                Log.i(TAG, "fail to request location update, ignore", ex);
+
+            }
+
+            catch (IllegalArgumentException ex)
+            {
+                Log.d(TAG, "provider does not exist " + ex.getMessage());
+            }
+
+            try {
+
+                locationManager.requestLocationUpdates(
+
+                        android.location.LocationManager.GPS_PROVIDER,
+                        0,
+                        0,
+                        listener);
+            }
+            catch (SecurityException ex) {
+
+                Log.i(TAG, "fail to request location update, ignore", ex); }
+
+            catch (IllegalArgumentException ex) {
+
+                Log.d(TAG, "provider does not exist " + ex.getMessage());  }
+
+            Log.d(TAG, "startReceivingLocationUpdates");
+        }
+    }
+}

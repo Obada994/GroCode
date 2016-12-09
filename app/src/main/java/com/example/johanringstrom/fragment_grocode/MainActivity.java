@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(getApplicationContext(),"List Deleted",Toast.LENGTH_SHORT).show();
             android.app.FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, new MyLists()).commit();
+            setTitle("My Lists");
             return true;
 
         }
@@ -215,7 +216,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent);        }
         else if (id == R.id.deals) {
             setTitle("Deals");
-            fragmentManager.beginTransaction().replace(R.id.content_frame, new Deals()).commit();
+            Deals d = new Deals();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, d).commit();
 
         }
 

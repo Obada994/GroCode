@@ -81,21 +81,25 @@ public class SignupActivity extends AppCompatActivity {
         conn.clientId=email;
         //args[0]=request,args[1]=email,args[2]=password,args[3]=name
         conn.publish("register",new String[]{"register",email,password,name});
-        try {
-            Thread.sleep(1000);
-            conn.loggedin(email,password);
-            conn.loggedin(email,password);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
                         // On complete call either onSignupSuccess or onSignupFailed
                         // depending on success
-                        conn.subscribeToTopic();
+                        try {
+                            new Thread() {
+                                public void run() {
+                                    //subscribe to topic Gro/email
+                                    conn.subscribeToTopic();
+                                }
+                            }.start();
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                            }
+                        conn.loggedin(_emailText.getText().toString(), _passwordText.getText().toString());
+                        conn.loggedin(_emailText.getText().toString(), _passwordText.getText().toString());
                         onSignupSuccess();
-                        // onSignupFailed();
                         progressDialog.dismiss();
                     }
                 }, 3000);
@@ -105,7 +109,7 @@ public class SignupActivity extends AppCompatActivity {
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
-        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
         finish();
     }

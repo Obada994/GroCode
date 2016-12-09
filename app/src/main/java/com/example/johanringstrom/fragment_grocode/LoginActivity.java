@@ -71,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
         _loginButton.setEnabled(false);
 
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
-                R.style.AppTheme);
+                R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
@@ -81,6 +81,7 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         String email = _emailText.getText().toString();
+
         //set the client ID to the provided email
         conn.clientId=email;
         new android.os.Handler().postDelayed(
@@ -165,5 +166,4 @@ public class LoginActivity extends AppCompatActivity {
     public void finish() {
         conn = null;
     }
-
 }

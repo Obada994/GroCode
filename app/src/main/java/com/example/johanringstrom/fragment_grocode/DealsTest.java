@@ -16,16 +16,15 @@ import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
 
+
 /**
- * Created by johanringstrom on 18/11/16.
+ * Created by johanringstrom on 10/11/16.
  */
-public class ItemsSubList extends Fragment {
+public class DealsTest extends Fragment{
     View myView;
-    //private ListView mListView ;
-    //private ListView mListView2 ;
     private ExpandableHeightListView mListView, mListView2;
-    private static  ArrayAdapter<String> mlistAdapter ;
-    private static  ArrayAdapter<String> mlistAdapterBought ;
+    private static  ArrayAdapter<String> mListAdapter ;
+    private static  ArrayAdapter<String> mListAdapterBought ;
     private ArrayList<String> GroList;
     private ArrayList<String> GroList2;
     private EditText EditText;
@@ -43,11 +42,12 @@ public class ItemsSubList extends Fragment {
         myView = inflater.inflate(R.layout.itemslist_layout, container, false);
         setHasOptionsMenu(true);
 
-
         //Create connection object to get access to publish and subscribe
         con = new Connection(getActivity());
         btnSpeak = (ImageButton) myView.findViewById(R.id.btnSpeak);
         EditText = (EditText) myView.findViewById(R.id.editText);
+
+
 
         EditText.setOnEditorActionListener(
                 new EditText.OnEditorActionListener() {
@@ -59,13 +59,8 @@ public class ItemsSubList extends Fragment {
                                 || actionId == EditorInfo.IME_ACTION_DONE
                                 || event.getAction() == KeyEvent.ACTION_DOWN
                                 && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                            //add item
-                            con.publish("items", new String[]{"add-subItem",con.clientId,ListName, EditText.getText().toString()});
-                            //fetch the updated list
-                            con.publish("items", new String[]{"fetch-SubItems",con.clientId,ListName});
-                            Toast.makeText(getActivity(),
-                                    EditText.getText()+" has been added", Toast.LENGTH_LONG).show();
-                            ItemsList.hideKeyboardFrom(getActivity(),myView);
+                            con.publish("items", new String[]{"add",con.clientId,ListName, EditText.getText().toString()});
+                            con.publish("items", new String[]{"fetch",con.clientId,ListName});
                             EditText.setText("");
                             return true;
                         }
@@ -74,28 +69,28 @@ public class ItemsSubList extends Fragment {
                     }
                 });
 
+
         //Create myList object to get accsess to its methods
-        ShareLists myItems = new ShareLists();
+        MyLists myItems = new MyLists();
         ListName = myItems.getListname();
         getActivity().setTitle(myItems.getListname());
-
 
 
         //List view to display list
         final ExpandableHeightListView mListView = (ExpandableHeightListView) myView.findViewById(R.id.listView);
         final ExpandableHeightListView mListView2 = (ExpandableHeightListView) myView.findViewById(R.id.listView2);
-
-
+        //mListView = (ListView) myView.findViewById(R.id.listView);
+        //mListView2 = (ListView) myView.findViewById(R.id.listView2);
 
         //Create a adapter to listview
         GroList = new ArrayList<>();
-        mlistAdapter = new ArrayAdapter<>(getActivity(), R.layout.simplerow, GroList);
-        mListView.setAdapter(mlistAdapter);
+        mListAdapter = new ArrayAdapter<>(getActivity(),R.layout.simplerow,GroList);
+        mListView.setAdapter(mListAdapter);
         mListView.setExpanded(true);
 
         GroList2 = new ArrayList<>();
-        mlistAdapterBought = new ArrayAdapter<>(getActivity(), R.layout.simplerow, GroList2);
-        mListView2.setAdapter(mlistAdapterBought);
+        mListAdapterBought = new ArrayAdapter<>(getActivity(),R.layout.simplerow, GroList2);
+        mListView2.setAdapter(mListAdapterBought);
         mListView2.setExpanded(true);
 
 
@@ -105,11 +100,13 @@ public class ItemsSubList extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 Object item = mListView.getItemAtPosition(position);
-                con.publish("items", new String[]{"setSubItemsToBought",con.clientId,ListName, item.toString()});
-                con.publish("items", new String[]{"fetch-BoughtSubItem",con.clientId,ListName.toString()});
-                con.publish("items", new String[]{"fetch-SubItems",con.clientId,ListName});
+                //text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                //args[0]=request, args[1]=email, args[2]=list, args[3]=item
+                con.publish("items", new String[]{"setToBought",con.clientId,ListName, item.toString()});
+                con.publish("items", new String[]{"fetch-bought",con.clientId,ListName});
+                con.publish("items", new String[]{"fetch",con.clientId,ListName});
                 Toast.makeText(getActivity(),
-                        item.toString()+" has been bought", Toast.LENGTH_LONG).show();
+                        item.toString()+" bought", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -118,15 +115,32 @@ public class ItemsSubList extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 item = mListView2.getItemAtPosition(position);
+                /*TextView text = (TextView) view;
+                text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);*/
                 //args[0]=request, args[1]=email, args[2]=list, args[3]=item
-                con.publish("items", new String[]{"delete-SubItem",con.clientId,ListName, item.toString()});
-                con.publish("items", new String[]{"fetch-BoughtSubItem",con.clientId,ListName.toString()});
+                con.publish("items", new String[]{"delete",con.clientId,ListName,item.toString() });
+                con.publish("items", new String[]{"fetch-bought",con.clientId,ListName.toString()});
                 Toast.makeText(getActivity(),
-                        item.toString()+" has been deleted", Toast.LENGTH_LONG).show();
+                        item.toString()+" deleted", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        //What to do when the add button is pressed
+        final Button btnAdd = (Button) myView.findViewById(R.id.add);
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
 
             }
         });
 
+        /*final Button bought = (Button) myView.findViewById(R.id.Baught);
+        bought.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //args[0]=request, args[1]=email, args[2]=list, args[3]=item
+               // con.publish("boughtItems", new String[]{"fetch-bought",con.clientId,ListName.toString()});
+
+            }
+        });*/
 
         btnSpeak.setOnClickListener(new View.OnClickListener() {
 
@@ -140,10 +154,10 @@ public class ItemsSubList extends Fragment {
     }
     //Gets listadapter
     public ArrayAdapter<String> getListAdapter(){
-        return this.mlistAdapter;
+        return this.mListAdapter;
     }
     public ArrayAdapter<String> getListAdapterBought(){
-        return this.mlistAdapterBought;
+        return this.mListAdapterBought;
     }
 
 
@@ -163,6 +177,8 @@ public class ItemsSubList extends Fragment {
         }
     }
 
+
+
     /**
      * Receiving speech input
      */
@@ -176,22 +192,18 @@ public class ItemsSubList extends Fragment {
 
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    con.publish("items", new String[]{"add-subItem",con.clientId,ListName, result.get(0).toString()});
-                    //fetch the updated list
-                    con.publish("items", new String[]{"fetch-SubItems",con.clientId,ListName});
-                    Toast.makeText(getActivity(),
-                            result.get(0)+" has been added", Toast.LENGTH_LONG).show();
+                    EditText.setText(result.get(0));
                 }
                 break;
             }
 
         }
-
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
-        inflater.inflate(R.menu.unsublist, menu);
+        inflater.inflate(R.menu.list, menu);
     }
+
 
 }
