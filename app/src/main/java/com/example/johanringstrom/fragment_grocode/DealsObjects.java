@@ -1,13 +1,8 @@
 package com.example.johanringstrom.fragment_grocode;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.Image;
-import android.util.Base64;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
-
-import static com.example.johanringstrom.fragment_grocode.R.color.base;
 
 /**
  * Created by obada on 2016-12-08.
@@ -17,7 +12,7 @@ public class DealsObjects {
     String name;
     String price;
     String description;
-    String img;
+    ImageView image;
     static ArrayList<DealsObjects> list = new ArrayList<>();
 
 public DealsObjects(String[] args)

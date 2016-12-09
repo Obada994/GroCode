@@ -34,6 +34,7 @@ public class Deals extends Fragment {
     static TextView name;
     static TextView price;
     static TextView description;
+    static ImageView image;
 
     private View view;
     private Button b;
@@ -62,6 +63,7 @@ public class Deals extends Fragment {
         name = (TextView) dialog.findViewById(R.id.nameText);
         price = (TextView) dialog.findViewById(R.id.priceText);
         description = (TextView) dialog.findViewById(R.id.descriptionText);
+        image = (ImageView) dialog.findViewById(R.id.dealImage);
         //Set what to do when a list item is clicked
         ListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -76,6 +78,7 @@ public class Deals extends Fragment {
                 name.setText("Name: "+item.toString()+" ");
                 price.setText("Price: "+tmp.price+" SEK ");
                 description.setText("Description: "+tmp.description+" ");
+                image.setImageResource(R.drawable.placeholder);
                 dialog.show();
             }
         });

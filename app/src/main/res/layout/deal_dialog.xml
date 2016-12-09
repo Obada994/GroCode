@@ -2,48 +2,39 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
-    <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp">
-        <TextView
-                android:id="@+id/nameText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Name:"
-                android:layout_gravity="top"/>
-        <ImageView
-                android:id="@+id/dealImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="Image"/>
-    </LinearLayout>
+              android:layout_height="match_parent"
+              android:paddingTop="10dp"
+              android:paddingBottom="10dp">
+
     <TextView
-            android:id="@+id/dealName"
+            android:id="@+id/nameText"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text=""
-            />
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:textStyle="bold"
+            android:text=""/>
+
     <TextView
             android:id="@+id/priceText"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Price:"/>
-    <TextView
-            android:id="@+id/dealPrice"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text=""/>
+    <ImageView
+            android:id="@+id/dealImage"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text=""/>
+            android:contentDescription="Image"
+            android:src="@drawable/placeholder"
+            android:adjustViewBounds="true"/>
     <TextView
             android:id="@+id/descriptionText"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Description:"/>
-    <TextView
-            android:id="@+id/dealDescription"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:text=""/>
+
 </LinearLayout>
