@@ -3,12 +3,13 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
-    <DrawerLayout
+    <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="10dp">
         <TextView
+                android:id="@+id/nameText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Name:"
@@ -18,7 +19,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="Image"/>
-    </DrawerLayout>
+    </LinearLayout>
     <TextView
             android:id="@+id/dealName"
             android:layout_width="fill_parent"
@@ -26,6 +27,7 @@
             android:text=""
             />
     <TextView
+            android:id="@+id/priceText"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="Price:"/>
@@ -35,6 +37,7 @@
             android:layout_height="wrap_content"
             android:text=""/>
     <TextView
+            android:id="@+id/descriptionText"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="Description:"/>
