@@ -40,7 +40,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
 
                     @Override
                     public void onSuccess(IMqttToken asyncActionToken) {
-                        // We are connected
+                        // Application is connected
                         Log.d(TAG, "onSuccess");
                     }
 
@@ -347,8 +347,6 @@ public class Connection extends AppCompatActivity implements MqttCallback {
     }
     public void connectionLost(Throwable cause) {
         // Called when the connection to the server has been lost.
-        // An application may choose to implement reconnection
-        // logic at this point. This sample simply exits.
         Log.d(TAG, "Connection to " + "broker." + " lost!");
         System.exit(1);
     }
