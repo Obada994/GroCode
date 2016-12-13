@@ -1,7 +1,10 @@
 package com.example.johanringstrom.fragment_grocode;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.*;
@@ -170,76 +173,6 @@ public class Connection extends AppCompatActivity implements MqttCallback {
                 }
                 break;
 
-            /*case "boughtItems":
-                //args[0]=request, args[1]=email, args[2]=list, args[3]=item
-                try {
-                    //{"client_id":"beroo75@gmail.com","list":"home","request":"add","data":{"item":"apple"}} or {"client_id":"beroo75@gmail.com","list":"home","request":"fetch"}
-                    toSend.put("client_id", args[1]);
-                    toSend.put("list", args[2]);
-                    toSend.put("request",args[0]);
-                    //if it's not fetch then we need this key (data)
-                    if (!args[0].equals("fetch-bought"))
-                    {
-                        data.put("item",args[3]);
-                        toSend.put("data",data);
-                    }
-                }catch(Exception e)
-                {
-                    e.printStackTrace();
-                }
-                break;*/
-            /*case "subLists":
-                //args[0]=request, args[1]=email, args[2]=list, args[3]=item
-                //args[0]=request, args[1]=email, args[2]=list
-                try
-                {
-                    //{"client_id":args[1],"request":args[0],"list":args[2]} or {"client_id":args[2],"request":"fetch-lists"}
-                    toSend.put("client_id",args[1]);
-                    toSend.put("request",args[0]);
-                    //if it's not fetch-lists then we need this key (list)
-                    if(!args[0].equals("fetch-SubscriptionList"))
-                        toSend.put("list",args[2]);
-                }catch(Exception e)
-                {
-                    e.printStackTrace();
-                }
-                break;*/
-            /*case "notifications":
-                //args[0]=request, args[1]=email, args[2]=list, args[3]=item
-                //args[0]=request, args[1]=email, args[2]=list
-                try
-                {
-                    //{"client_id":args[1],"request":args[0],"list":args[2]} or {"client_id":args[2],"request":"fetch-lists"}
-                    toSend.put("client_id",args[1]);
-                    toSend.put("request",args[0]);
-                    //if it's not fetch-lists then we need this key (list)
-                    if(!args[0].equals("fetch-Notifications"))
-                        toSend.put("list",args[2]);
-                }catch(Exception e)
-                {
-                    e.printStackTrace();
-                }
-                break;
-            case "subListItems":
-                //args[0]=request, args[1]=email, args[2]=list, args[3]=item
-                try {
-                    //{"client_id":"beroo75@gmail.com","list":"home","request":"add","data":{"item":"apple"}} or {"client_id":"beroo75@gmail.com","list":"home","request":"fetch"}
-                    toSend.put("client_id", args[1]);
-                    toSend.put("list", args[2]);
-                    toSend.put("request",args[0]);
-                    //if it's not fetch then we need this key (data)
-                    if (!args[0].equals("fetch-SubItems"))
-                    {
-                        data.put("item",args[3]);
-                        toSend.put("data",data);
-                    }
-                }catch(Exception e)
-                {
-                    e.printStackTrace();
-                }
-                break;
-            default:*/
-
         }
         //send here after we have defined the object
         try {
@@ -352,49 +285,77 @@ public class Connection extends AppCompatActivity implements MqttCallback {
     }
     public void deliveryComplete(IMqttDeliveryToken token) {}
 
-    public void messageArrived(String topic, MqttMessage message) throws Exception {
+    public void messageArrived(String topic, MqttMessage message) throws Exception
+    {
+        //create a JSON object out of the message
         JSONObject Obj = new JSONObject(new String(message.getPayload()));
-        //if it's not a reply from the server then just ignore it
-        if(topic.equals("deal/gogodeals/database/deals"))
-        {
-            //remove all the old deals from the old location
-//            if(DealsObjects.list.size()==0)
-//            DealsObjects.list.clear();
-            Deals.listAdapter.clear();
-            JSONArray itemArr = Obj.getJSONArray("data");
-
-            if(DealsObjects.list.size()!=0)
-                DealsObjects.list.clear();
-            for(int i=0;i<itemArr.length(); i++)
-            {
-               //add the name of the deal to the activity
-               Deals.listAdapter.add((String) itemArr.getJSONObject(i).get("name"));
-                //add the new deals to the list
-                new DealsObjects(new String[]{(String) itemArr.getJSONObject(i).get("name"), String.valueOf(itemArr.getJSONObject(i).getInt("price")),(String) itemArr.getJSONObject(i).get("description")});
-            }
-        }
-        if (!Obj.has("reply"))
-            return;
+        //create a JSON array from the data sent from the server
         JSONArray itemArr = null;
-        //get the array if the key data exsits
-        if (Obj.has("data"))
-            itemArr = Obj.getJSONArray("data");
-        Log.d("currentTodo", currentTodo);
-        // {"reply":"done","data":[{"item":"home"}]}
-        //if the data are list names then update the list activities
+        //init the array
+        if(Obj.has("data"))
+            itemArr=Obj.getJSONArray("data");
+        //quit if the message arrived is not a reply from our server nor the deal's server
+        if(!Obj.has("reply") && !topic.equals("deal/gogodeals/database/deals"))
+            return ;
 
+        switch(topic)
+        {
+            //if it's a reply from the deals Server
+            case "deal/gogodeals/database/deals":
+                //remove old deals
+                Deals.listAdapter.clear();
+
+                if(DealsObjects.list.size()!=0)
+                    //remove all the old deals from the old location
+                    DealsObjects.list.clear();
+
+                for(int i=0;i<itemArr.length(); i++)
+                {
+                    //read the picture first, the picture is a string separated with a ',' and the first part is just info about the pic so we just ignore it
+                    String str = (String)itemArr.getJSONObject(i).get("picture");
+                    String[] strings = str.split(",");
+                    //get the image bytes only without the info
+                    str = strings[1];
+                    //add the name of the deal to the activity
+                    Deals.listAdapter.add((String) itemArr.getJSONObject(i).get("name"));
+                    //add the new deals to the list
+                    //new DealsObject with the name,price...etc
+                    new DealsObjects(
+                            new String[]{(String) itemArr.getJSONObject(i).get("name"),
+                                    String.valueOf(itemArr.getJSONObject(i).getInt("price")),
+                                    (String) itemArr.getJSONObject(i).get("description")},
+                            //read a String into a bitmap
+                            readImg(str)
+                    );
+                }
+                break;
+            default:
+                if (topic.equals("Gro/"+clientId +"/fetch-lists"))
+                {
+                    //update the main activities with the lists we got
+                    MyLists myLists = new MyLists();
+                    //clear the old lists
+                    myLists.getListAdapter().clear();
+                    //add the lists to the main view
+                    for (int i = 0; i < itemArr.length(); i++) {
+                        myLists.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
+                    }
+                }
+                else
+
+                break;
+        }
+        //check if the currentToDo is a login/register then read the reply from the Server and switch the boolean according to it
         if (currentTodo.equals("login") || currentTodo.equals("register")) {
-
             if (message.toString().equals("{\"reply\":\"done\"}")) {
                 loggedin = true;
             } else {
                 loggedin = false;
-                // sub=false;
-
             }
         }
-        Log.d(">>Topic??", topic);
-        if (topic.equals("Gro/" + clientId + "/fetch-lists")) {
+        //check what topic the messaged is arrived to and update the activity that relates to it
+        if (topic.equals("Gro/"+ clientId +"/fetch-lists"))
+        {
             MyLists myLists = new MyLists();
             myLists.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++) {
@@ -402,40 +363,42 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             }
         }
         // if the data are items update the items activities
-
-        if (topic.equals("Gro/" + clientId + "/fetch")) {
+        else if (topic.equals("Gro/" + clientId + "/fetch"))
+        {
             ItemsList myItems = new ItemsList();
             myItems.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++)
                 myItems.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
 
         }
-        if (topic.equals("Gro/" + clientId + "/fetch-bought")) {
+        else if (topic.equals("Gro/" + clientId + "/fetch-bought"))
+        {
             ItemsList myBoughtItems = new ItemsList();
             myBoughtItems.getListAdapterBought().clear();
             for (int i = 0; i < itemArr.length(); i++)
                 myBoughtItems.getListAdapterBought().add((String) itemArr.getJSONObject(i).get("item"));
 
         }
-        if (topic.equals("Gro/" + clientId + "/fetch-SubscriptionList")) {
+        else if (topic.equals("Gro/" + clientId + "/fetch-SubscriptionList"))
+        {
             ShareLists mySubLists = new ShareLists();
             mySubLists.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++)
                 mySubLists.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
         }
-        if (topic.equals("Gro/" + clientId + "/fetch-Notifications")) {
+        else if (topic.equals("Gro/" + clientId + "/fetch-Notifications")) {
             Notifications myNotifications = new Notifications();
             myNotifications.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++)
                 myNotifications.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
         }
-        if (topic.equals("Gro/" + clientId + "/fetch-SubItems")) {
+        else if (topic.equals("Gro/" + clientId + "/fetch-SubItems")) {
             ItemsSubList mySubItems = new ItemsSubList();
             mySubItems.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++)
                 mySubItems.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
         }
-        if (topic.equals("Gro/" + clientId + "/fetch-BoughtSubItem")) {
+        else if (topic.equals("Gro/" + clientId + "/fetch-BoughtSubItem")) {
             ItemsSubList myBoughtSubItems = new ItemsSubList();
             myBoughtSubItems.getListAdapterBought().clear();
             for (int i = 0; i < itemArr.length(); i++)
@@ -444,14 +407,10 @@ public class Connection extends AppCompatActivity implements MqttCallback {
     }
     boolean loggedin(String email,String pass)
     {
+        //publish a login request
         publish("login",new String[]{"login", email,pass});
         try {
-            client.publish("Gro/"+clientId,new MqttMessage(new String("loggedIn is: "+loggedin).getBytes()));
             Thread.sleep(1000);
-        } catch (MqttPersistenceException e) {
-            e.printStackTrace();
-        } catch (MqttException e) {
-            e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -462,4 +421,10 @@ public class Connection extends AppCompatActivity implements MqttCallback {
     public MqttAndroidClient getClient(){
         return client;
     }
+    public Bitmap readImg(String str)
+    {
+        byte[] decodedString = Base64.decode(str.getBytes(), Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+    }
+
 }
