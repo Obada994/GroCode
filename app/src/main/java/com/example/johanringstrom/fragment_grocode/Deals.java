@@ -29,14 +29,13 @@ public class Deals extends Fragment {
 
     private android.widget.ListView ListView ;
     static ArrayAdapter<String> listAdapter;
-    ArrayList<String> gogoDeals;
-    static Dialog dialog;
-    static TextView name;
-    static TextView price;
-    static TextView description;
-    static ImageView image;
+    //dialog to show when you click on an offer
+    private Dialog dialog;
+    private TextView name;
+    private TextView price;
+    private TextView description;
+    private ImageView image;
 
-    private View view;
     private Button b;
     private LocationManager locationManager;
     private LocationListener listener;
@@ -46,17 +45,18 @@ public class Deals extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.activity_deals, container, false);
+        View view = inflater.inflate(R.layout.activity_deals, container, false);
         ListView = (ListView) view.findViewById(R.id.listView);
 
-        gogoDeals = new ArrayList<>();
+         ArrayList<String> gogoDeals = new ArrayList<>();
         listAdapter = new ArrayAdapter<>(getActivity(), R.layout.simplerow, gogoDeals);
         ListView.setAdapter(listAdapter);
         listAdapter.add("no available deals :(");
         //Creat connection object to get accsess to publish and subscribe
         con = new Connection(getActivity(),Connection.clientId);
+        //subscribe to the deals topic
         con.subscribeToDeals();
-
+        //init variables
         dialog = new Dialog(getActivity(),R.style.AppTheme_Dark_Dialog);
         dialog.setContentView(R.layout.deal_dialog);
         dialog.setTitle("Deal information");
@@ -64,7 +64,7 @@ public class Deals extends Fragment {
         price = (TextView) dialog.findViewById(R.id.priceText);
         description = (TextView) dialog.findViewById(R.id.descriptionText);
         image = (ImageView) dialog.findViewById(R.id.dealImage);
-        //Set what to do when a list item is clicked
+        //Set action listeners
         ListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
@@ -72,13 +72,16 @@ public class Deals extends Fragment {
                 Object item = ListView.getItemAtPosition(position);
                 DealsObjects tmp=null;
                 if(DealsObjects.list.size()!=0)
-                tmp = DealsObjects.findByName(item.toString());
+                    //find the deal object that matches the name we clicked on
+                    tmp = DealsObjects.findByName(item.toString());
+                //if we have no deals
                 if(tmp==null)
-                    tmp = new DealsObjects(new String[]{"PLEASE CLICK UPDATE","OR","MOVE YOUR ASS TO A NEW LOCATION"});
+                    //create this "deal"
+                    tmp = new DealsObjects(new String[]{"PLEASE CLICK UPDATE","OR MOVE YOUR ASS TO A NEW LOCATION"," "},null);
                 name.setText("Name: "+item.toString()+" ");
-                price.setText("Price: "+tmp.price+" SEK ");
-                description.setText("Description: "+tmp.description+" ");
-                image.setImageResource(R.drawable.placeholder);
+                price.setText("Price: "+tmp.getPrice()+" SEK ");
+                description.setText("Description: "+tmp.getDescription()+" ");
+                image.setImageBitmap(tmp.getImage());
                 dialog.show();
             }
         });
@@ -105,6 +108,7 @@ public class Deals extends Fragment {
 
                 startReceivingLocationUpdates();
 
+                //send this location as a test if we have no deals in out location
                 Location update = new Location("");
                 update.setLatitude(57.7071734);
                 update.setLongitude(11.9391119);
@@ -159,9 +163,6 @@ public class Deals extends Fragment {
 
             @Override
             public void onProviderDisabled(String s) {
-
-//                Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-//                startActivity(i);
             }
         };
 
