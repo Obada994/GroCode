@@ -26,30 +26,36 @@ public class Connection extends AppCompatActivity implements MqttCallback {
     private String TAG;
     static boolean loggedin;
 
+    //Connection constructer with two arguments
     public Connection(final Context context, String clientId){
-
+          //If the client is already connected do nothing.
         if(client == null) {
+            //Set clientId
             this.clientId = clientId;
-            //Set clientId and create new create a MqttAndroid client
-            //String clientId = MqttClient.generateClientId();
+
+            //Creates a new client that connects to the prata server
             this.client =
                     new MqttAndroidClient(context, "tcp://54.154.153.243:1883",
-                            //Tryes to connect this client to a the  broker. test.mosquitto.org
-                            clientId);//"tcp://192.168.43.185:1883
+                            clientId);
             try {
+                //the IMqttToken provides a mechanism for tracking the completion of an asynchronous task.
+                //In this case a connection request.
                 IMqttToken token = client.connect();
+                //Register a listener to be notified when an action complete.
                 token.setActionCallback(new IMqttActionListener() {
                     public String TAG;
 
                     @Override
+                    //If the connection is succesfully connected to the broker we print a log message
                     public void onSuccess(IMqttToken asyncActionToken) {
                         // Application is connected
                         Log.d(TAG, "onSuccess");
                     }
 
                     @Override
+                    //If the connection is a failiure connected to the broker we print a log message
                     public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                        // Something went wrong e.g. connection timeout or firewall problems
+                        // Something went wrong
                         Log.d(TAG, "onFailure");
 
                     }
@@ -57,35 +63,38 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             } catch (MqttException e) {
                 e.printStackTrace();
             }
-
+            //Sets where the callback should be made. Where the message arrives.
             client.setCallback(this);
         }
 
     }
-
+    //Connection constructer with one arguments
     public Connection(final Context context){
-
+        //If the client is already connected do nothing.
         if(client == null) {
-            //Set clientId and create new create a MqttAndroid client
-            //String clientId = MqttClient.generateClientId();
+            //Creates a new client that connects to the prata server
             this.client =
                     new MqttAndroidClient(context, "tcp://54.154.153.243:1883",
-            //Tryes to connect this client to a the  broker. test.mosquitto.org
-                            clientId);//"tcp://192.168.43.185:1883
+                            clientId);
             try {
+                //the IMqttToken provides a mechanism for tracking the completion of an asynchronous task.
+                //In this case a connection request.
                 IMqttToken token = client.connect();
+                //Register a listener to be notified when an action complete.
                 token.setActionCallback(new IMqttActionListener() {
                     public String TAG;
 
                     @Override
+                    //If the connection is succesfully connected to the broker we print a log message
                     public void onSuccess(IMqttToken asyncActionToken) {
                         // We are connected
                         Log.d(TAG, "onSuccess");
                     }
 
                     @Override
+                    //If the connection is a failiure connected to the broker we print a log message
                     public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                        // Something went wrong e.g. connection timeout or firewall problems
+                        // Something went wrong
                         Log.d(TAG, "onFailure");
 
                     }
@@ -93,19 +102,26 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             } catch (MqttException e) {
                 e.printStackTrace();
             }
-
+            //Sets where the callback should be made. Where the message arrives.
             client.setCallback(this);
         }
 
     }
-    //publish
+    //A publish message that being send to the broker. The arguments is first the type of publish
+    // being done a items, lists, login or register) and a string of arguments that
+    // consists of what request is being done,(login, fetch, fetch-lists ...) and different arguments
+    //depending on what type it is.
     void publish(String type,String[] args)
     {
         //save the request to help reading the reply from the server
         currentTodo = type;
+        //What topic to receive back to.
         String topic="Gro/"+clientId;
+        //Creates to jason objects to be filled with values.
         JSONObject toSend=new JSONObject();
         JSONObject data=new JSONObject();
+        //Depending on what type that is coming in as a argument do the specific task in the matched
+        //case statement.
         switch(type)
         {
 
@@ -143,7 +159,8 @@ public class Connection extends AppCompatActivity implements MqttCallback {
                     //{"client_id":args[1],"request":args[0],"list":args[2]} or {"client_id":args[2],"request":"fetch-lists"}
                     toSend.put("client_id",args[1]);
                     toSend.put("request",args[0]);
-                    //if it's not fetch-lists then we need this key (list)
+                    //if it's not the requests in the if statment then we need the key list added to our
+                    //publish statement.
                     if(!(args[0].equals("fetch-lists") || args[0].equals("fetch-SubscriptionList")|| args[0].equals("fetch-Notifications")))
                     toSend.put("list",args[2]);
                 }catch(Exception e)
@@ -158,12 +175,11 @@ public class Connection extends AppCompatActivity implements MqttCallback {
                     toSend.put("client_id", args[1]);
                     toSend.put("list", args[2]);
                     toSend.put("request",args[0]);
-                    Log.d("??args0>>>", args[0]);
-                    //if it's not fetch then we need this key (data)
+                    //if it's not the requests in the if statment then we need the key data added to our
+                    //publish statement.
                     if (!(args[0].equals("fetch") || args[0].equals("fetch-bought")|| args[0].equals("fetch-bought")||
                             args[0].equals("fetch-SubItems")|| args[0].equals("reject-invite")|| args[0].equals("fetch-BoughtSubItem")) )
                     {
-                        Log.d("??args0>>>", args[0]);
                         data.put("item",args[3]);
                         toSend.put("data",data);
                     }
@@ -187,19 +203,21 @@ public class Connection extends AppCompatActivity implements MqttCallback {
         //Subscribe to root client + client
         String topic = "Gro/"+clientId;
         try {
+            //The IMqttToken provides a mechanism for tracking the completion of an asynchronous task.
+            //In this case a subscribe request.
             IMqttToken subToken = client.subscribe(topic, qos);
+            //Register a listener to be notified when an action complete.
             subToken.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    // The message was published
-
+                    // The subscribe message was a success. We have not implemented a action here
+                    // but futher developmnet and changes probably will.
                 }
-
                 @Override
                 public void onFailure(IMqttToken asyncActionToken,
                                       Throwable exception) {
-                    // The subscription could not be performed, maybe the user was not
-                    // authorized to subscribe on the specified topic e.g. using wildcards
+                    // The subscription could not be performed, We have not implemented a action here
+                    // but futher developmnet and changes probably will.
 
                 }
             });
@@ -207,23 +225,29 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             e.printStackTrace();
         }
     }
+    //Subscribe to the root topic gro / the client_id / the request made. This to make it easier to
+    //handel incoming messages.
     public  void subscribeToTopic(String Request) {
         //Subscribe to root client + client
         String topic = "Gro/"+clientId+"/"+Request;
         try {
+            //The IMqttToken provides a mechanism for tracking the completion of an asynchronous task.
+            //In this case a subscribe request.
             IMqttToken subToken = client.subscribe(topic, qos);
+            //Register a listener to be notified when an action complete.
             subToken.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    // The message was published
+                    // The subscribe message was a success. We have not implemented a action here
+                    // but futher developmnet and changes probably will.
 
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken,
                                       Throwable exception) {
-                    // The subscription could not be performed, maybe the user was not
-                    // authorized to subscribe on the specified topic e.g. using wildcards
+                    // The subscription could not be performed, We have not implemented a action here
+                    // but futher developmnet and changes probably will.
 
                 }
             });
@@ -231,22 +255,27 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             e.printStackTrace();
         }
     }
+    //Subscribe to the gogodeals topic to receive food deals from there server.
     public void subscribeToDeals() {
         String topic = "deal/gogodeals/database/deals";
         try {
+            //The IMqttToken provides a mechanism for tracking the completion of an asynchronous task.
+            //In this case a subscribe request. The qos is set to one.
             IMqttToken subToken = client.subscribe(topic, qos);
+            //Register a listener to be notified when an action complete.
             subToken.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    // The message was published
+                    // The subscribe message was a success. We have not implemented a action here
+                    // but futher developmnet and changes probably will.
 
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken,
                                       Throwable exception) {
-                    // The subscription could not be performed, maybe the user was not
-                    // authorized to subscribe on the specified topic e.g. using wildcards
+                    // The subscription could not be performed, We have not implemented a action here
+                    // but futher developmnet and changes probably will.
 
                 }
             });
@@ -255,7 +284,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
         }
     }
 
-    //Unsubscribe to predefined list.
+    //Unsubscribe to predefined topic.
     public void unSubscribe(){
         String topic = "Gro/"+clientId;
         try {
@@ -269,29 +298,34 @@ public class Connection extends AppCompatActivity implements MqttCallback {
                 @Override
                 public void onFailure(IMqttToken asyncActionToken,
                                       Throwable exception) {
-                    // some error occurred, this is very unlikely as even if the client
-                    // did not had a subscription to the topic the unsubscribe action
-                    // will be successfully
+                    // some error occurred, when trying to unsubscribe.
                 }
             });
         } catch (MqttException e) {
             e.printStackTrace();
         }
     }
+    //If the application loses connection to the broker a toast is published and the system exits.
     public void connectionLost(Throwable cause) {
         // Called when the connection to the server has been lost.
         Log.d(TAG, "Connection to " + "broker." + " lost!");
         System.exit(1);
     }
+    //Called when delivery for a message has been completed, and all acknowledgments have been received.
+    // For QoS 1 it is called when PUBACK is received. We use quality of service 1 a message
+    // will be delivered at least onece.
     public void deliveryComplete(IMqttDeliveryToken token) {}
 
+    //This method is called when a message arrives from the server and isinvoked synchronously
+    // by the MQTT client.
     public void messageArrived(String topic, MqttMessage message) throws Exception
     {
         //create a JSON object out of the message
         JSONObject Obj = new JSONObject(new String(message.getPayload()));
-        //create a JSON array from the data sent from the server
+        //Initiate a jason array
         JSONArray itemArr = null;
-        //init the array
+        //If the jason object has the key data the value connected to this key(a jason array)
+        //will be assigned to the itemArr variable.
         if(Obj.has("data"))
             itemArr=Obj.getJSONArray("data");
         //quit if the message arrived is not a reply from our server nor the deal's server
@@ -304,14 +338,14 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             case "deal/gogodeals/database/deals":
                 //remove old deals
                 Deals.listAdapter.clear();
-
                 if(DealsObjects.list.size()!=0)
                     //remove all the old deals from the old location
                     DealsObjects.list.clear();
 
                 for(int i=0;i<itemArr.length(); i++)
                 {
-                    //read the picture first, the picture is a string separated with a ',' and the first part is just info about the pic so we just ignore it
+                    //read the picture first, the picture is a string separated with a ','
+                    // and the first part is just info about the pic so we just ignore it
                     String str = (String)itemArr.getJSONObject(i).get("picture");
                     String[] strings = str.split(",");
                     //get the image bytes only without the info
@@ -362,7 +396,8 @@ public class Connection extends AppCompatActivity implements MqttCallback {
                 myLists.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
             }
         }
-        // if the data are items update the items activities
+        // If the message coming in to the topic ".../fetch" put list with items
+        //to the ItemsList view
         else if (topic.equals("Gro/" + clientId + "/fetch"))
         {
             ItemsList myItems = new ItemsList();
@@ -371,6 +406,8 @@ public class Connection extends AppCompatActivity implements MqttCallback {
                 myItems.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
 
         }
+        // If the message coming in to the topic ".../fetch-bought" put list with items
+        // that are bought to the ItemsList view
         else if (topic.equals("Gro/" + clientId + "/fetch-bought"))
         {
             ItemsList myBoughtItems = new ItemsList();
@@ -379,6 +416,8 @@ public class Connection extends AppCompatActivity implements MqttCallback {
                 myBoughtItems.getListAdapterBought().add((String) itemArr.getJSONObject(i).get("item"));
 
         }
+        // If the message coming in to the topic ".../fetch-SubscriptionList" put list with lists
+        // you subscribe on to the ShareLists view
         else if (topic.equals("Gro/" + clientId + "/fetch-SubscriptionList"))
         {
             ShareLists mySubLists = new ShareLists();
@@ -386,18 +425,24 @@ public class Connection extends AppCompatActivity implements MqttCallback {
             for (int i = 0; i < itemArr.length(); i++)
                 mySubLists.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
         }
+        // If the message coming in to the topic ".../fetch-Notifications" put list with lists
+        // you have been invited to subscribe to in to the Notifications view
         else if (topic.equals("Gro/" + clientId + "/fetch-Notifications")) {
             Notifications myNotifications = new Notifications();
             myNotifications.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++)
                 myNotifications.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
         }
+        // If the message coming in to the topic ".../fetch-SubItems" put list with items that you subscribe to
+        // in to the ItemsSubList view
         else if (topic.equals("Gro/" + clientId + "/fetch-SubItems")) {
             ItemsSubList mySubItems = new ItemsSubList();
             mySubItems.getListAdapter().clear();
             for (int i = 0; i < itemArr.length(); i++)
                 mySubItems.getListAdapter().add((String) itemArr.getJSONObject(i).get("item"));
         }
+        // If the message coming in to the topic ".../fetch-BoughtSubItem" put list with items that
+        // you subscribe to and is bought in to the ItemsSubList view
         else if (topic.equals("Gro/" + clientId + "/fetch-BoughtSubItem")) {
             ItemsSubList myBoughtSubItems = new ItemsSubList();
             myBoughtSubItems.getListAdapterBought().clear();
@@ -405,11 +450,14 @@ public class Connection extends AppCompatActivity implements MqttCallback {
                 myBoughtSubItems.getListAdapterBought().add((String) itemArr.getJSONObject(i).get("item"));
         }
     }
+    //Method used to publish a login request
     boolean loggedin(String email,String pass)
     {
         //publish a login request
         publish("login",new String[]{"login", email,pass});
         try {
+            //The thread sleeps in order to wait for the login return message "{\"reply\":\"done\"}"
+            //or "{\"reply\":\"error\"}"
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -417,10 +465,11 @@ public class Connection extends AppCompatActivity implements MqttCallback {
         return loggedin;
     }
 
-    //Get client
+    //Get client this mqtt client
     public MqttAndroidClient getClient(){
         return client;
     }
+    //Decodes the pictures that arrives as strings and return them as a bitmap.
     public Bitmap readImg(String str)
     {
         byte[] decodedString = Base64.decode(str.getBytes(), Base64.DEFAULT);
