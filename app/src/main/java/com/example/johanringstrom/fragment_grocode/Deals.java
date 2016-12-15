@@ -46,17 +46,20 @@ public class Deals extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.activity_deals, container, false);
-        ListView = (ListView) view.findViewById(R.id.listView);
 
-         ArrayList<String> gogoDeals = new ArrayList<>();
+        //Creates a listview to show the deals in. The adapter wraps the data displayed in the lis.
+        ListView = (ListView) view.findViewById(R.id.listView);
+        ArrayList<String> gogoDeals = new ArrayList<>();
         listAdapter = new ArrayAdapter<>(getActivity(), R.layout.simplerow, gogoDeals);
         ListView.setAdapter(listAdapter);
         listAdapter.add("no available deals :(");
+
         //Creat connection object to get accsess to publish and subscribe
         con = new Connection(getActivity(),Connection.clientId);
         //subscribe to the deals topic
         con.subscribeToDeals();
-        //init variables
+
+        //Creates a dialog(popup) to put the information of a dealsobject in.
         dialog = new Dialog(getActivity(),R.style.AppTheme_Dark_Dialog);
         dialog.setContentView(R.layout.deal_dialog);
         dialog.setTitle("Deal information");
@@ -64,6 +67,7 @@ public class Deals extends Fragment {
         price = (TextView) dialog.findViewById(R.id.priceText);
         description = (TextView) dialog.findViewById(R.id.descriptionText);
         image = (ImageView) dialog.findViewById(R.id.dealImage);
+
         //Set action listeners
         ListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -90,6 +94,8 @@ public class Deals extends Fragment {
     }
 
     @Override
+    //OnRequestPermissionsResult is the callback for the result from requesting permissions for using some
+    // type of resource. In this case the location service.
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode){
             case 10:
@@ -99,7 +105,6 @@ public class Deals extends Fragment {
                 break;
         }
     }
-
     void configure_button(){
 
         b.setOnClickListener(new View.OnClickListener() {

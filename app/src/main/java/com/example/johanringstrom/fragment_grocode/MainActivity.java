@@ -39,18 +39,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //Creates a Connection object
         con = new Connection(MainActivity.this,Connection.clientId);
 
+        //Creates drawer to add the navigation links to.
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        //Creates a ActionBarDrawerToggle object to handel the state of the drawer. Open or close.
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        //Creates a navigation view.
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        //Puts the clientID to the header
         View header=navigationView.getHeaderView(0);
         TextView name = (TextView) header.findViewById(R.id.navClientId);
         name.setText(con.clientId);
 
+        //If the boolean loggedin is false unsubscribe to topic and move to loginactivity. Login did not
+        //succede
         if(!Connection.loggedin)
         {
             con.unSubscribe();
@@ -70,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     @Override
+    //Pressing backbutton and drawer close
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -168,44 +175,50 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.my_lists) {
             setTitle(getString(R.string.title_section1));
-            //Goes to first fragment
+            //Goes to MyLists
             fragmentManager.beginTransaction().replace(R.id.content_frame, new MyLists()).commit();
-
+            //Checks if application is connected and logs the state. If not makes a toast.
             if(con.getClient().isConnected()) {
                 Log.d("StateTest", "true");
 
-                //Publish a request
+
             } else {
                 Log.d("StateTest", "false");
-                Toast.makeText(MainActivity.this, "Not connected to the broker mother father", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Not connected to", Toast.LENGTH_LONG).show();
 
             }
 
 
         } if (id == R.id.share_lists) {
             setTitle("Shared Lists");
+            //Goes to ShareLists
             fragmentManager.beginTransaction().replace(R.id.content_frame, new ShareLists()).commit();
 
+            //Checks if application is connected and logs the state and publish a fetch request.
+            // If not connected makes a toast.
             if(con.getClient().isConnected()) {
                 Log.d("StateTest", "true");
                 con.publish("lists",new String[]{"fetch-SubscriptionList",con.clientId});//get lists
             } else {
                 Log.d("StateTest", "false");
-                Toast.makeText(MainActivity.this, "Not connected to the broker mother father", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Not connected to the broker", Toast.LENGTH_LONG).show();
 
             }
 
 
         } if (id == R.id.notifications) {
             setTitle(getString(R.string.title_section3));
+            //Moves to Notifications fragment.
             fragmentManager.beginTransaction().replace(R.id.content_frame, new Notifications()).commit();
 
+            //Checks if application is connected and logs the state and publish a fetch request.
+            // If not connected makes a toast.
             if(con.getClient().isConnected()) {
                 Log.d("StateTest", "true");
                 con.publish("lists",new String[]{"fetch-Notifications",con.clientId});//get lists
             } else {
                 Log.d("StateTest", "false");
-                Toast.makeText(MainActivity.this, "Not connected to the broker mother father", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Not connected to the broker", Toast.LENGTH_LONG).show();
 
             };
 
@@ -214,13 +227,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(MainActivity.this, "Logout Successful", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);        }
+
         else if (id == R.id.deals) {
+            //Moves to the deals fragment.
             setTitle("Deals");
             Deals d = new Deals();
             fragmentManager.beginTransaction().replace(R.id.content_frame, d).commit();
 
         }
 
+        //Close drawer when navigation click is made.
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

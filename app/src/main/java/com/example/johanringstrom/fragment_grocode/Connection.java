@@ -379,7 +379,8 @@ public class Connection extends AppCompatActivity implements MqttCallback {
 
                 break;
         }
-        //check if the currentToDo is a login/register then read the reply from the Server and switch the boolean according to it
+        //check if the currentToDo is a login/register then read the reply from the Server and
+        // switch the boolean according to if it is error ore done.
         if (currentTodo.equals("login") || currentTodo.equals("register")) {
             if (message.toString().equals("{\"reply\":\"done\"}")) {
                 loggedin = true;
