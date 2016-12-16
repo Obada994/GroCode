@@ -143,11 +143,13 @@ public class Deals extends Fragment {
                 JSONObject toSend=new JSONObject();
                 JSONObject data=new JSONObject();
                 JSONArray arr = new JSONArray();
+                JSONObject arrObj = new JSONObject();
                 try {
                     toSend.put("id",con.clientId);
                     data.put("longitude",longitude);
                     data.put("latitude",latitude);
-                    arr.put(0,"{\"filter\",\"food\"}");
+                    arrObj.put("filter","food");
+                    arr.put(0,arrObj);
                     data.put("filters",arr);
                     toSend.put("data",data);
                 } catch (JSONException e) {
