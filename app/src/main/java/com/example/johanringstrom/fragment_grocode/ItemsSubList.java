@@ -29,7 +29,6 @@ public class ItemsSubList extends Fragment {
     private ArrayList<String> GroList;
     private ArrayList<String> GroList2;
     private EditText EditText;
-    private EditText editText;
     private final int REQ_CODE_SPEECH_INPUT = 100;
     private String ListName;
     private static Object item;
@@ -146,7 +145,7 @@ public class ItemsSubList extends Fragment {
         return this.mlistAdapterBought;
     }
 
-    /**
+    /*
      * Showing google speech input dialog
      */
     private void promptSpeechInput() {
@@ -165,7 +164,7 @@ public class ItemsSubList extends Fragment {
         }
     }
 
-    /**
+    /*
      * Receiving speech input
      */
     @Override

@@ -14,76 +14,85 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
-    private static final int REQUEST_SIGNUP = 0;
+    private EditText emailText,passwordText;
+    private Button loginButton;
+    private TextView signupLink;
     Connection conn;
-
-    /*
-     * Bind a field to the view for the specified ID.
-     * The view will automatically be cast to the field type.
-     */
-
-    @BindView(R.id.input_email) EditText _emailText;
-    @BindView(R.id.input_password) EditText _passwordText;
-    @BindView(R.id.btn_login) Button _loginButton;
-    @BindView(R.id.link_signup) TextView _signupLink;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        ButterKnife.bind(this);
+
         //init the connection here with an empty client id
         conn = new Connection(LoginActivity.this,"");
-        _loginButton.setOnClickListener(new View.OnClickListener() {
+
+        //bind views
+        emailText = (EditText) this.findViewById(R.id.input_email);
+        passwordText = (EditText) this.findViewById(R.id.input_password);
+        loginButton = (Button) this.findViewById(R.id.btn_login);
+        signupLink = (TextView) this.findViewById(R.id.link_signup);
+
+        //runs login() on click
+        loginButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 login();
             }
         });
-
-        _signupLink.setOnClickListener(new View.OnClickListener() {
+        //starts new SignupActivity on click.
+        signupLink.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                // Start the Signup activity
                 Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);
+                startActivity(intent);
                 finish();
             }
         });
     }
 
+    /*
+         * When running login():
+         * Checks validate,
+         * Creates progressdialog,
+         * New runnable. runs OnLoginSucess(),
+         * Close progressdialog
+         */
+
     public void login() {
         Log.d(TAG, "Login");
 
+        // if not validate(), returns onLoginFailed().
         if (!validate()) {
             onLoginFailed();
             return;
         }
+        // disables click events
+        loginButton.setEnabled(false);
 
-        _loginButton.setEnabled(false);
-
+        //Opens new progressdialog.
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
+        // send a login request, extra to also create kinda delay for the messageArrived to get the reply"
+        //
         try {
-            conn.loggedin(_emailText.getText().toString(),_passwordText.getText().toString());
+            conn.loggedin(emailText.getText().toString(),passwordText.getText().toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String email = _emailText.getText().toString();
-
         //set the client ID to the provided email
-        conn.clientId=email;
+        String email = emailText.getText().toString();
+        conn.clientId = email;
+
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
@@ -96,8 +105,8 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                             }.start();
                             //send a login request
-                            conn.loggedin(_emailText.getText().toString(), _passwordText.getText().toString());
-                            conn.loggedin(_emailText.getText().toString(), _passwordText.getText().toString());
+                            conn.loggedin(emailText.getText().toString(), passwordText.getText().toString());
+                            conn.loggedin(emailText.getText().toString(), passwordText.getText().toString());
                             //move on to the main activity, we'll check of the failure/success of the login there then we'll either stay or get back here
                             onLoginSuccess();
                         } catch (Exception e) {
@@ -107,26 +116,17 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }, 3000);
     }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_SIGNUP) {
-            if (resultCode == RESULT_OK) {
 
-                // TODO: Implement successful signup logic here
-                // By default we just finish the Activity and log them in automatically
-                this.finish();
-            }
-        }
-    }
-
+    // Disable going back to the MainActivity
     @Override
     public void onBackPressed() {
-        // Disable going back to the MainActivity
         moveTaskToBack(true);
     }
 
+    // Starts new MainActivity.
     public void onLoginSuccess() {
-        _loginButton.setEnabled(true);
+        // enables click events
+        loginButton.setEnabled(true);
         Intent intent = new Intent(getApplicationContext(),MainActivity.class);
         startActivity(intent);
         finish();
@@ -134,34 +134,36 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-        _loginButton.setEnabled(true);
+        // enables click events
+        loginButton.setEnabled(true);
         //unsubscribe from the topic if login fails
         conn.unSubscribe();
-
     }
+
+    //Checks if the user have filled in the fields correctly and returns true if that's the case.
     public boolean validate() {
         boolean valid = true;
-
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        String email = emailText.getText().toString();
+        String password = passwordText.getText().toString();
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            _emailText.setError("enter a valid email address");
+            emailText.setError("enter a valid email address");
             valid = false;
         } else {
-            _emailText.setError(null);
+            emailText.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
+            passwordText.setError("between 4 and 10 alphanumeric characters");
             valid = false;
         } else {
-            _passwordText.setError(null);
+            passwordText.setError(null);
         }
 
         return valid;
     }
-    //Fixes leaked ServiceConnection
+
+    //Fixes leaked ServiceConnection by setting connection to null.
     @Override
     public void finish() {
         conn = null;

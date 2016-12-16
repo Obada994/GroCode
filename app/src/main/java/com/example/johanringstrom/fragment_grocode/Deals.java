@@ -82,7 +82,7 @@ public class Deals extends Fragment {
                 //if we have no deals
                 if(tmp==null)
                     //create this "deal"
-                    tmp = new DealsObjects(new String[]{"PLEASE CLICK UPDATE","OR MOVE YOUR ASS TO A NEW LOCATION"," "},null);
+                    tmp = new DealsObjects(new String[]{"PLEASE CLICK UPDATE","OR MOVE TO A NEW LOCATION"," "},null);
                 name.setText("Name: "+item.toString()+" ");
                 price.setText("Price: "+tmp.getPrice()+" SEK ");
                 description.setText("Description: "+tmp.getDescription()+" ");

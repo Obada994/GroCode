@@ -15,49 +15,57 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
+    private EditText nameText,emailText,passwordText;
+    private Button signupButton;
+    private TextView loginLink;
 
-    @BindView(R.id.input_name) EditText _nameText;
-    @BindView(R.id.input_email) EditText _emailText;
-    @BindView(R.id.input_password) EditText _passwordText;
-    @BindView(R.id.btn_signup) Button _signupButton;
-    @BindView(R.id.link_login) TextView _loginLink;
     Connection conn;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
-        ButterKnife.bind(this);
-
         conn = new Connection(SignupActivity.this,"");
         conn.unSubscribe();
 
-        _signupButton.setOnClickListener(new View.OnClickListener() {
+        // Bind views.
+        nameText = (EditText)  this.findViewById(R.id.input_name);
+        emailText = (EditText) this.findViewById(R.id.input_email);
+        passwordText = (EditText) this.findViewById(R.id.input_password);
+        signupButton = (Button) this.findViewById(R.id.btn_signup);
+        loginLink = (TextView) this.findViewById(R.id.link_login);
+
+        //runs signup() on click
+        signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 signup();
             }
         });
 
-        _loginLink.setOnClickListener(new View.OnClickListener() {
+        // Finish the registration screen and return to the LoginActivity
+        loginLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Finish the registration screen and return to the Login activity
-                //Toast.makeText(MainActivity.this, "Logout Successful", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
             }
 
             });
-
     }
 
+    /*
+     * When running signup():
+     * Checks validate,
+     * Creates progressdialog,
+     * New runnable. runs OnSignupSuccess(),
+     * Close progressdialog
+     */
 
     public void signup() {
         Log.d(TAG, "Signup");
@@ -67,26 +75,26 @@ public class SignupActivity extends AppCompatActivity {
             return;
         }
 
-        _signupButton.setEnabled(false);
+        // disables click events
+        signupButton.setEnabled(false);
 
+        //Opens new progressdialog.
         final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this,
                 R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Creating Account...");
         progressDialog.show();
 
-        String name = _nameText.getText().toString();
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        String name = nameText.getText().toString();
+        String email = emailText.getText().toString();
+        String password = passwordText.getText().toString();
         conn.clientId=email;
-        //args[0]=request,args[1]=email,args[2]=password,args[3]=name
         conn.publish("register",new String[]{"register",email,password,name});
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
-                        // On complete call either onSignupSuccess or onSignupFailed
-                        // depending on success
+                        // On complete call onSignupSuccess
                         try {
                             new Thread() {
                                 public void run() {
@@ -97,55 +105,60 @@ public class SignupActivity extends AppCompatActivity {
                         }catch (Exception e) {
                             e.printStackTrace();
                             }
-                        conn.loggedin(_emailText.getText().toString(), _passwordText.getText().toString());
-                        conn.loggedin(_emailText.getText().toString(), _passwordText.getText().toString());
+                        //send a signup request
+                        conn.loggedin(emailText.getText().toString(), passwordText.getText().toString());
+                        conn.loggedin(emailText.getText().toString(), passwordText.getText().toString());
                         onSignupSuccess();
                         progressDialog.dismiss();
                     }
                 }, 3000);
     }
 
-
+    /*
+     * Finish SignupActivity and logs in directly.
+     */
     public void onSignupSuccess() {
-        _signupButton.setEnabled(true);
-        setResult(RESULT_OK, null);
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        signupButton.setEnabled(true);
+        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
         startActivity(intent);
         finish();
     }
 
     public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-
-        _signupButton.setEnabled(true);
+        Toast.makeText(getBaseContext(), "Signup failed", Toast.LENGTH_LONG).show();
+        // enables click events
+        signupButton.setEnabled(true);
     }
+
+    /*
+     * Checks if the user have filled in the fields correctly and returns true if that's the case.
+     */
 
     public boolean validate() {
         boolean valid = true;
-
-        String name = _nameText.getText().toString();
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        String name = nameText.getText().toString();
+        String email = emailText.getText().toString();
+        String password = passwordText.getText().toString();
 
         if (name.isEmpty() || name.length() < 3) {
-            _nameText.setError("at least 3 characters");
+            nameText.setError("at least 3 characters");
             valid = false;
         } else {
-            _nameText.setError(null);
+            nameText.setError(null);
         }
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            _emailText.setError("enter a valid email address");
+            emailText.setError("enter a valid email address");
             valid = false;
         } else {
-            _emailText.setError(null);
+            emailText.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
+            passwordText.setError("between 4 and 10 alphanumeric characters");
             valid = false;
         } else {
-            _passwordText.setError(null);
+            passwordText.setError(null);
         }
 
         return valid;
