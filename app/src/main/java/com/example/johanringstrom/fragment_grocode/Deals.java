@@ -113,7 +113,7 @@ public class Deals extends Fragment {
 
                 startReceivingLocationUpdates();
 
-                //send this location as a test if we have no deals in out location
+                //send this location as a test if we have no deals in our location
                 Location update = new Location("");
                 update.setLatitude(57.7071734);
                 update.setLongitude(11.9391119);
@@ -124,6 +124,7 @@ public class Deals extends Fragment {
     }
 
     @Override
+    //init button listener, and the location manager
     public void onStart() {
         super.onStart();
 
