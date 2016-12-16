@@ -70,6 +70,7 @@ public class Notifications extends Fragment{
                 btnAccept.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         con.publish("items", new String[]{"confirmShare",con.clientId,list.toString()});
+                        con.publish("lists",new String[]{"fetch-Notifications",con.clientId});//get lists
                         Toast.makeText(getActivity(),"List Accepted",Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                     }
@@ -78,6 +79,7 @@ public class Notifications extends Fragment{
                 btnReject.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         con.publish("items", new String[]{"reject-invite",con.clientId,list.toString()});
+                        con.publish("lists",new String[]{"fetch-Notifications",con.clientId});//get lists
                         Toast.makeText(getActivity(),"List Declined",Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                     }

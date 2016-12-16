@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -141,11 +142,13 @@ public class Deals extends Fragment {
 
                 JSONObject toSend=new JSONObject();
                 JSONObject data=new JSONObject();
+                JSONArray arr = new JSONArray();
                 try {
                     toSend.put("id",con.clientId);
                     data.put("longitude",longitude);
                     data.put("latitude",latitude);
-                    data.put("filters","food");
+                    arr.put(0,"{\"filter\",\"food\"}");
+                    data.put("filters",arr);
                     toSend.put("data",data);
                 } catch (JSONException e) {
                     e.printStackTrace();
