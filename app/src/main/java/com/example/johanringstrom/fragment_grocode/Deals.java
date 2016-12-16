@@ -130,7 +130,6 @@ public class Deals extends Fragment {
         super.onStart();
 
         b = (Button) getActivity().findViewById(R.id.button);
-
         b.setText("update");
         locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
