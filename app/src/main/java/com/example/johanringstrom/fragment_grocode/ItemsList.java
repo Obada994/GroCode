@@ -80,10 +80,7 @@ public class ItemsList extends Fragment{
 
         
 
-        //Create myList object to get accsess to its methods
-        MyLists myItems = new MyLists();
-        ListName = myItems.getListname();
-        getActivity().setTitle(myItems.getListname());
+
 
 
         //List view to display list
