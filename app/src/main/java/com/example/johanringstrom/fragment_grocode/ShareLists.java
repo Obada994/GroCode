@@ -20,7 +20,6 @@ public class ShareLists extends Fragment {
     private static  ArrayAdapter<String> listAdapter ;
     ArrayList<String> GroList;
     Connection con;
-    private MqttAndroidClient client;
     private static Object list;
 
 

@@ -6,6 +6,7 @@ package com.example.johanringstrom.fragment_grocode;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -33,10 +34,12 @@ public class LoginActivity extends AppCompatActivity {
 
         //bind views
         emailText = (EditText) this.findViewById(R.id.input_email);
+        emailText.setTextColor(getColor(R.color.iron));
         passwordText = (EditText) this.findViewById(R.id.input_password);
+        passwordText.setTextColor(getColor(R.color.black));
         loginButton = (Button) this.findViewById(R.id.btn_login);
         signupLink = (TextView) this.findViewById(R.id.link_signup);
-
+        signupLink.setTextColor(getColor(R.color.iron));
         //runs login() on click
         loginButton.setOnClickListener(new View.OnClickListener() {
 

@@ -31,7 +31,6 @@ public class MyLists extends Fragment{
     private static Object list;
     private ImageButton btnSpeak;
     private final int REQ_CODE_SPEECH_INPUT = 100;
-    private TextView voiceText;
     private EditText editText;
 
     @Nullable

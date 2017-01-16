@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">Grocode</string>
+    <string name="app_name">WillNameLater</string>
     <string name="UserID">UserID</string>
 
-    <string name="title_section1">My Lists</string>
-    <string name="title_section2">Shared Lists</string>
+    <string name="title_section1">My Deals</string>
+    <string name="title_section2">Community</string>
     <string name="title_section3">Notifications</string>
     <string name="title_section4">Logout</string>
 

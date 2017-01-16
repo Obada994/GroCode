@@ -5,11 +5,11 @@
         <item
                 android:id="@+id/my_lists"
                 android:icon="@drawable/ic_mylist"
-                android:title="My Lists"/>
+                android:title="My Deals"/>
         <item
                 android:id="@+id/share_lists"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Shared Lists"/>
+                android:title="Community"/>
 
         <item
                 android:id="@+id/notifications"
@@ -19,7 +19,7 @@
         <item
                 android:id="@+id/deals"
                 android:icon="@drawable/ic_menu_deals"
-                android:title="Deals"/>
+                android:title="Search"/>
 
         <item
                 android:id="@+id/logout"

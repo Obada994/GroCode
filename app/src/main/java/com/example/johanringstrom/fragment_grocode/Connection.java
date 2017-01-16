@@ -24,7 +24,7 @@ public class Connection extends AppCompatActivity implements MqttCallback {
     private int qos = 1;
     private static String currentTodo;
     private String TAG;
-    static boolean loggedin;
+    static boolean loggedin=true;
 
     //Connection constructer with two arguments
     public Connection(final Context context, String clientId){
